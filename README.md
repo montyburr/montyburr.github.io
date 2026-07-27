@@ -14,9 +14,12 @@ for the full smoke-test checklist.
 
 ## Structure
 
-- `index.html` — landing page (about + project grid)
+- `index.html` — landing page (about, auto-generated skills list, project grid)
+- `project.html` — single template for every project's own page (`project.html?id=<id>`),
+  rendered by `assets/js/project-detail.js` from the same project data
 - `assets/css/style.css`, `assets/js/` — styles and rendering logic
-- `assets/js/projects-data.js` — edit this to add/update project cards
+- `assets/js/projects-data.js` — edit this to add/update project cards; `tags` feed the
+  Skills section and `details` feed each project's own page, both automatically
 - `assets/img/` — images (compressed; no raw screen recordings)
 
 ## Editing content

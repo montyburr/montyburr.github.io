@@ -74,8 +74,13 @@ function createProjectCard(project) {
   blurb.className = "project-card__blurb";
   blurb.textContent = project.blurb;
 
+  const overlay = document.createElement("a");
+  overlay.className = "project-card__link-overlay";
+  overlay.href = `project.html?id=${project.id}`;
+  overlay.setAttribute("aria-label", `View details for ${project.title}`);
+
   body.append(title, buildTags(project.tags), blurb, buildLinks(project));
-  card.append(buildMedia(project.media), body, glass);
+  card.append(buildMedia(project.media), body, glass, overlay);
   tilt.append(card);
 
   return tilt;
@@ -85,6 +90,22 @@ function renderProjects() {
   const grid = document.getElementById("project-grid");
   if (!grid) return;
   PROJECTS.forEach((project) => grid.appendChild(createProjectCard(project)));
+}
+
+// Tags that describe a project's context rather than a skill (kept out of the Skills section).
+const NON_SKILL_TAGS = new Set(["Team Project", "Internship"]);
+
+function renderSkills() {
+  const list = document.getElementById("skills-list");
+  if (!list) return;
+  const skills = [...new Set(PROJECTS.flatMap((project) => project.tags))].filter(
+    (tag) => !NON_SKILL_TAGS.has(tag)
+  );
+  skills.forEach((skill) => {
+    const li = document.createElement("li");
+    li.textContent = skill;
+    list.appendChild(li);
+  });
 }
 
 function setYear() {
@@ -117,5 +138,6 @@ function observeProjectCards() {
 }
 
 renderProjects();
+renderSkills();
 setYear();
 observeProjectCards();
