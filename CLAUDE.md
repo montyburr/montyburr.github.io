@@ -1,8 +1,8 @@
 # Portfolio Site
 
 ## What this is
-Personal portfolio for Monty Burr — 2nd-year BSc Computer Science w/ Cyber Security
-placement, Newcastle University. Showcases coding projects with screenshots and
+Personal portfolio for Monty Burr — 2nd-year BSc Computer Science with Cyber Security,
+Newcastle University. Showcases coding projects with screenshots and
 short screen recordings. Hosted on GitHub Pages.
 
 ## Stack
@@ -20,7 +20,7 @@ short screen recordings. Hosted on GitHub Pages.
 - IT Support Ticket Triage Dashboard — React/FastAPI, AI-powered triage suggestions
 - Personal Finance Tracker — Python, Tkinter, Matplotlib (data viz: bar/line/pie)
 - Income Inequality Insight Platform — Flask, SQL, interactive world map (team project)
-- Cyber placement work @ AJW Group — SIEM research, phishing awareness campaign
+- Cyber internship work @ AJW Group — SIEM research, phishing awareness campaign
   (write-up / non-code, presented as experience)
 
 ## Media rules

@@ -14,8 +14,8 @@ const PROJECTS = [
     tags: ["React", "FastAPI", "AI"],
     media: {
       type: "image",
-      src: "assets/img/placeholder/project-placeholder.svg",
-      alt: "Screenshot placeholder — IT Support Ticket Triage Dashboard",
+      src: "assets/img/screenshots/ticket-triage.png",
+      alt: "IT Support Ticket Triage Dashboard — ticket list with AI Copilot panel showing category, priority, and suggested action",
     },
     links: { github: "#", demo: null },
   },
@@ -48,16 +48,16 @@ const PROJECTS = [
     links: { github: "#", demo: null },
   },
   {
-    id: "ajw-placement",
-    title: "Cyber Security Placement — AJW Group",
+    id: "ajw-internship",
+    title: "Cyber Security Internship — AJW Group",
     blurb:
-      "Placement work covering SIEM research and a company-wide phishing " +
+      "Internship work covering SIEM research and a company-wide phishing " +
       "awareness campaign. Presented here as a write-up rather than code.",
-    tags: ["SIEM", "Security Awareness", "Placement"],
+    tags: ["SIEM", "Security Awareness", "Internship"],
     media: {
       type: "image",
       src: "assets/img/placeholder/project-placeholder.svg",
-      alt: "Placeholder graphic — AJW Group cyber security placement",
+      alt: "Placeholder graphic — AJW Group cyber security internship",
     },
     links: { github: null, demo: null },
     writeup: "#",

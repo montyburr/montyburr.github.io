@@ -54,8 +54,15 @@ function buildLinks(project) {
 }
 
 function createProjectCard(project) {
+  const tilt = document.createElement("div");
+  tilt.className = "project-tilt";
+
   const card = document.createElement("article");
   card.className = "project-card";
+
+  const glass = document.createElement("div");
+  glass.className = "project-card__glass";
+  glass.setAttribute("aria-hidden", "true");
 
   const body = document.createElement("div");
   body.className = "project-card__body";
@@ -68,9 +75,10 @@ function createProjectCard(project) {
   blurb.textContent = project.blurb;
 
   body.append(title, buildTags(project.tags), blurb, buildLinks(project));
-  card.append(buildMedia(project.media), body);
+  card.append(buildMedia(project.media), body, glass);
+  tilt.append(card);
 
-  return card;
+  return tilt;
 }
 
 function renderProjects() {
@@ -84,5 +92,30 @@ function setYear() {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 }
 
+function observeProjectCards() {
+  const cards = document.querySelectorAll(".project-card");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    cards.forEach((card) => card.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+  );
+
+  cards.forEach((card) => observer.observe(card));
+}
+
 renderProjects();
 setYear();
+observeProjectCards();
