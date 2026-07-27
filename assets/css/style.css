@@ -108,6 +108,11 @@
   --nav-height: 3.25rem;
   --nav-float-gap: 1.5rem;
 
+  /* Projects hover preview. The row list reserves space from these same two
+     values, so the preview can never end up sitting over a project title. */
+  --preview-w: min(28vw, 380px);
+  --preview-right: clamp(1.5rem, 4vw, 4.5rem);
+
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 180ms;
@@ -512,94 +517,500 @@ main > section:not(.hero) {
 
 .section-title {
   font-size: var(--fs-h2);
-  margin: 0 0 var(--space-lg);
+  margin: 0 0 clamp(var(--space-lg), 4vw, var(--space-xl));
+  text-align: center;
 }
 
-/* ==========================================================================
-   Below this line: existing sections, retargeted to the new tokens only.
-   These are restyled to the reference in the chunks after the hero.
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   Shared card treatment — border + gold glow on hover, with the cursor-follow
+   gold spotlight from the reference layered inside. --mx/--my come from main.js.
+   -------------------------------------------------------------------------- */
+
+.card-spotlight {
+  position: relative;
+  overflow: hidden;
+  background: var(--c-bg-elevated);
+  border: var(--border-hairline) solid var(--c-border);
+  border-radius: var(--radius-card);
+  transition: border-color var(--dur-mid) ease, box-shadow var(--dur-mid) ease,
+    transform var(--dur-mid) var(--ease-out);
+}
+
+.card-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    200px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--c-gold-rgb) / 0.15),
+    transparent 70%
+  );
+  transition: opacity var(--dur-mid) ease;
+}
+
+.card-spotlight > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card-spotlight:hover {
+  border-color: rgb(var(--c-gold-rgb) / 0.5);
+  box-shadow: var(--glow-gold-soft);
+}
+
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   About — bio copy beside a bordered panel
+   -------------------------------------------------------------------------- */
+
+.about__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: clamp(var(--space-lg), 5vw, var(--space-2xl));
+  align-items: center;
+}
+
+.about__copy .section-title {
+  text-align: left;
+}
 
 .about__text {
   color: var(--c-text-muted);
-  max-width: 65ch;
+  max-width: 58ch;
+  margin: 0;
 }
 
-/* Skills */
+.about__panel {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border: var(--border-hairline) solid var(--c-border);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgb(var(--c-gold-rgb) / 0.08), transparent 70%),
+    var(--c-bg-elevated);
+}
 
-.skills-list {
+.about__glyph {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 600;
+  color: var(--c-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Skills — category cards, three then two
+   -------------------------------------------------------------------------- */
+
+.skills-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  justify-content: center;
+  gap: clamp(var(--space-sm), 2.5vw, var(--space-md));
+}
+
+.skill-card {
+  flex: 0 1 calc(33.333% - var(--space-md));
+  min-width: 230px;
+  padding: clamp(1.5rem, 2.5vw, 1.875rem);
+}
+
+.skill-card__title {
+  font-size: var(--fs-h3);
+  color: var(--c-gold);
+  margin: 0 0 var(--space-sm);
+}
+
+.skill-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.skill-card__list li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
+.skill-card__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Projects — website2's numbered row list with a floating hover preview,
+   recoloured to gold and set in the website1 display serif.
+   -------------------------------------------------------------------------- */
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: var(--border-hairline) solid var(--c-border);
+}
+
+.project-row {
+  border-bottom: var(--border-hairline) solid var(--c-border);
+  padding-block: clamp(1.375rem, 3vw, 2.125rem);
+  transition: opacity var(--dur-mid) ease;
+}
+
+/* Hovering one row dims its siblings. 0.55 keeps the dimmed titles at 5.0:1
+   against the page background — the reference's #4d4d4d is only 2.4:1. */
+.project-list.is-hovering .project-row {
+  opacity: 0.55;
+}
+
+.project-list.is-hovering .project-row:hover,
+.project-list .project-row.is-active,
+.project-list .project-row:focus-within {
+  opacity: 1;
+}
+
+.project-row__link {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(var(--space-sm), 2vw, var(--space-md));
+  color: inherit;
+}
+
+.project-row__num {
+  flex: none;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--c-gold);
+  opacity: 0.75;
+}
+
+.project-row__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.4vw, 3.125rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--c-display);
+}
+
+/* Gold sweeps across the title left-to-right rather than snapping. Guarded so
+   the text never renders transparent where background-clip:text is missing. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .project-row__title {
+    background-image: linear-gradient(
+      90deg,
+      var(--c-gold) 0 50%,
+      var(--c-display) 50% 100%
+    );
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 520ms var(--ease-out);
+  }
+
+  .project-row:hover .project-row__title,
+  .project-row.is-active .project-row__title,
+  .project-row:focus-within .project-row__title {
+    background-position: 0 0;
+  }
+}
+
+.project-row__icon {
+  flex: none;
+  display: inline-flex;
+  align-self: center;
+  margin-left: auto;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--c-gold);
+  opacity: 0;
+  transform: translate3d(-6px, 6px, 0);
+  transition: opacity var(--dur-mid) ease, transform var(--dur-mid) var(--ease-out);
+}
+
+.project-row:hover .project-row__icon,
+.project-row.is-active .project-row__icon,
+.project-row:focus-within .project-row__icon {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.project-row__tags {
+  margin: var(--space-2xs) 0 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+  letter-spacing: 0.02em;
+}
+
+/* Floating cover image — fixed to the upper right, independent of the rows,
+   trailing the active row's vertical position and cross-fading its content. */
+.project-preview {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: var(--preview-right);
+  z-index: 5;
+  width: var(--preview-w);
+  aspect-ratio: 16 / 9;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background: var(--c-bg-elevated);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.55);
+  transition: opacity var(--dur-mid) ease, visibility var(--dur-mid),
+    transform 520ms var(--ease-out);
+}
+
+@media (hover: hover) and (min-width: 900px) {
+  .project-preview {
+    display: block;
+  }
+
+  /* Keep the rows clear of the preview's column. This is the preview's own
+     width and offset, less whatever margin the container already provides. */
+  .project-list {
+    padding-right: max(
+      0px,
+      calc(
+        var(--preview-w) + var(--preview-right) - var(--gutter) + var(--space-md) -
+          max(0px, (100vw - var(--container-width)) / 2)
+      )
+    );
+  }
+}
+
+.project-preview.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.project-preview__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+
+.project-preview__img.is-front {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Education — centre-line timeline with alternating cards
+   -------------------------------------------------------------------------- */
+
+.timeline {
+  position: relative;
+  padding-block: var(--space-sm);
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+  background: rgb(var(--c-gold-rgb) / 0.22);
+}
+
+/* Scroll-linked marker that slides down the same line. */
+.timeline__progress {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
+  background: var(--c-gold);
+}
+
+.timeline__item {
+  position: relative;
+  width: calc(50% - var(--space-xl));
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.timeline__item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline__item:nth-of-type(odd) {
+  margin-right: auto;
+  text-align: right;
+}
+
+.timeline__item:nth-of-type(even) {
+  margin-left: auto;
+}
+
+.timeline__node {
+  position: absolute;
+  top: 1.9rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--c-gold);
+  box-shadow: 0 0 0 4px rgb(var(--c-gold-rgb) / 0.16);
+}
+
+.timeline__item:nth-of-type(odd) .timeline__node {
+  right: calc((var(--space-xl) + 5.5px) * -1);
+}
+
+.timeline__item:nth-of-type(even) .timeline__node {
+  left: calc((var(--space-xl) + 5.5px) * -1);
+}
+
+.timeline__card {
+  padding: clamp(1.375rem, 2.5vw, 1.75rem);
+}
+
+.timeline__title {
+  font-size: var(--fs-h3);
+  margin: 0 0 var(--space-3xs);
+}
+
+.timeline__institution {
+  margin: 0;
+  color: var(--c-gold);
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+
+.timeline__meta {
+  margin: var(--space-2xs) 0 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.timeline__detail {
+  margin: var(--space-xs) 0 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
+/* --------------------------------------------------------------------------
+   Achievements — two-column cards with a circular icon badge
+   -------------------------------------------------------------------------- */
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-md);
+}
+
+.achievement-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: clamp(1.5rem, 2.5vw, 1.875rem);
+}
+
+.achievement-card__badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: var(--border-hairline) solid rgb(var(--c-gold-rgb) / 0.4);
+  background: rgb(var(--c-gold-rgb) / 0.08);
+  color: var(--c-gold);
+}
+
+.achievement-card__title {
+  font-size: var(--fs-h3);
+  margin: 0;
+}
+
+.achievement-card__meta {
+  margin: var(--space-3xs) 0 0;
+  color: var(--c-gold);
+  font-size: var(--fs-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.achievement-card__detail {
+  margin: var(--space-2xs) 0 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
+/* --------------------------------------------------------------------------
+   Contact — existing links, restyled. No form.
+   -------------------------------------------------------------------------- */
+
+.contact__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.contact__line {
+  margin: 0 0 var(--space-lg);
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+}
+
+.contact__socials {
+  display: flex;
+  gap: var(--space-sm);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.skills-list li {
-  background: rgb(var(--c-gold-rgb) / 0.1);
-  border: var(--border-hairline) solid rgb(var(--c-gold-rgb) / 0.28);
-  color: var(--c-gold);
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-pill);
-}
-
-/* Project grid */
-
-.project-grid {
+.contact__socials a {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-md);
-}
-
-.project-tilt {
-  height: 100%;
-  perspective: 1200px;
-}
-
-.project-card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: var(--c-bg-elevated);
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
   border: var(--border-hairline) solid var(--c-border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transform-style: preserve-3d;
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity var(--dur-slow) ease,
-    transform 0.5s var(--ease-out), box-shadow var(--dur-mid) ease,
-    border-color var(--dur-mid) ease;
+  background: var(--c-bg-elevated);
+  color: var(--c-text-muted);
+  transition: color var(--dur-mid) ease, border-color var(--dur-mid) ease,
+    box-shadow var(--dur-mid) ease, transform var(--dur-fast) var(--ease-out);
 }
 
-.project-card.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.project-tilt:hover .project-card,
-.project-tilt:focus-within .project-card {
-  transform: translateY(-4px);
-  border-color: rgb(var(--c-gold-rgb) / 0.45);
+.contact__socials a:hover {
+  color: var(--c-gold);
+  border-color: rgb(var(--c-gold-rgb) / 0.55);
   box-shadow: var(--glow-gold-soft);
+  transform: translateY(-2px);
 }
 
-.project-card__glass {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    160deg,
-    rgb(var(--c-display-rgb) / 0.06),
-    transparent 45%
-  );
-  pointer-events: none;
-}
+/* --------------------------------------------------------------------------
+   Project detail page (project.html)
+   -------------------------------------------------------------------------- */
 
 .project-card__media {
   aspect-ratio: 16 / 9;
@@ -612,19 +1023,6 @@ main > section:not(.hero) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.project-card__body {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  flex: 1;
-}
-
-.project-card__body h3 {
-  margin: 0;
-  font-size: var(--fs-h3);
 }
 
 .project-card__tags {
@@ -645,33 +1043,11 @@ main > section:not(.hero) {
   border-radius: var(--radius-pill);
 }
 
-.project-card__blurb {
-  color: var(--c-text-muted);
-  font-size: 0.92rem;
-  margin: 0;
-  flex: 1;
-}
-
 .project-card__links {
-  position: relative;
-  z-index: 2;
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
 }
-
-.project-card__link-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.project-card__link-overlay:focus-visible {
-  outline: 2px solid var(--c-gold);
-  outline-offset: -2px;
-}
-
-/* Project detail page */
 
 .project-detail {
   padding-block: calc(var(--nav-height) + var(--space-xl)) var(--space-2xl);
@@ -719,7 +1095,9 @@ main > section:not(.hero) {
   margin-bottom: 0;
 }
 
-/* Footer */
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
 
 .site-footer {
   border-top: var(--border-hairline) solid var(--c-border);
@@ -727,21 +1105,80 @@ main > section:not(.hero) {
 }
 
 .footer__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
   color: var(--c-text-muted);
   font-size: 0.9rem;
+  text-align: center;
 }
 
-.footer__links {
-  display: flex;
-  gap: 1.25rem;
-  list-style: none;
+.footer__inner p {
   margin: 0;
-  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Section responsive behaviour
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .about__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about__panel {
+    aspect-ratio: 16 / 9;
+    order: -1;
+  }
+
+  .skill-card {
+    flex: 1 1 calc(50% - var(--space-md));
+  }
+
+  /* Timeline collapses to a single line down the left. */
+  .timeline::before,
+  .timeline__progress {
+    left: 6px;
+    transform: translateX(0);
+  }
+
+  .timeline__progress {
+    transform: translateX(0) scaleY(0);
+  }
+
+  .timeline__item,
+  .timeline__item:nth-of-type(odd),
+  .timeline__item:nth-of-type(even) {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: calc(var(--space-lg) + 6px);
+    text-align: left;
+  }
+
+  .timeline__item:nth-of-type(odd) .timeline__node,
+  .timeline__item:nth-of-type(even) .timeline__node {
+    left: 1px;
+    right: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .skill-card {
+    flex: 1 1 100%;
+  }
+
+  .project-row__link {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-sm);
+  }
+
+  /* Always break after the number so short and long titles line up alike. */
+  .project-row__num {
+    flex-basis: 100%;
+  }
+
+  .project-row__icon {
+    margin-left: 0;
+  }
 }
 
 /* --------------------------------------------------------------------------
