@@ -5,13 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">Project — Monty Burr's Portfolio</title>
   <meta id="page-description" name="description" content="Project details — Monty Burr's Portfolio.">
+  <link rel="preload" href="assets/fonts/playfair-display-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav container">
-      <a class="nav__brand" href="index.html#top">Monty Burr's Portfolio</a>
-      <ul class="nav__links">
+  <header class="site-header" id="site-header">
+    <nav class="nav-pill" aria-label="Primary">
+      <a class="nav-pill__brand" href="index.html#top">Monty Burr's Portfolio</a>
+      <button class="nav-pill__toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+        <span class="nav-pill__bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-pill__links" id="nav-menu">
         <li><a href="index.html#about">About</a></li>
         <li><a href="index.html#skills">Skills</a></li>
         <li><a href="index.html#projects">Projects</a></li>
@@ -41,6 +47,7 @@
   </footer>
 
   <script src="assets/js/projects-data.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/project-detail.js"></script>
 </body>

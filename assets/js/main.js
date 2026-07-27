@@ -92,8 +92,7 @@ function renderProjects() {
   PROJECTS.forEach((project) => grid.appendChild(createProjectCard(project)));
 }
 
-// Tags that describe a project's context rather than a skill (kept out of the Skills section).
-const NON_SKILL_TAGS = new Set(["Team Project", "Internship"]);
+// NON_SKILL_TAGS lives in projects-data.js — the hero's tech line uses it too.
 
 function renderSkills() {
   const list = document.getElementById("skills-list");

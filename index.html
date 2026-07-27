@@ -5,13 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monty Burr — Portfolio</title>
   <meta name="description" content="Monty Burr — BSc Computer Science with Cyber Security, Newcastle University. Coding projects showcasing a passion for cyber security.">
+  <link rel="preload" href="assets/fonts/playfair-display-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav container">
-      <a class="nav__brand" href="#top">Monty Burr</a>
-      <ul class="nav__links">
+  <header class="site-header" id="site-header">
+    <nav class="nav-pill" aria-label="Primary">
+      <a class="nav-pill__brand" href="#top">Monty Burr</a>
+      <button class="nav-pill__toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+        <span class="nav-pill__bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-pill__links" id="nav-menu">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
@@ -22,10 +28,17 @@
 
   <main>
     <section id="top" class="hero">
+      <canvas class="hero__particles" id="hero-particles" aria-hidden="true"></canvas>
+      <div class="hero__veil" aria-hidden="true"></div>
       <div class="container hero__inner">
         <p class="hero__eyebrow">BSc Computer Science with Cyber Security — Newcastle University</p>
         <h1 class="hero__title">Monty Burr's Portfolio</h1>
-        <p class="hero__tagline">Computer Science student with a passion for cyber security.</p>
+        <p class="hero__tagline">
+          <!-- Full sentence for assistive tech; the animated copy below is aria-hidden
+               so the typewriter isn't announced character by character. -->
+          <span class="visually-hidden">Computer Science student with a passion for cyber security.</span>
+          <span class="hero__type" id="hero-type" aria-hidden="true">Computer Science student with a passion for cyber security.</span><span class="hero__caret" id="hero-caret" aria-hidden="true" hidden></span>
+        </p>
         <div class="hero__cta">
           <a class="btn btn--primary" href="#projects">View Projects</a>
           <a class="btn btn--ghost" href="mailto:montyburr@hotmail.co.uk">Get in touch</a>
@@ -70,6 +83,8 @@
   </footer>
 
   <script src="assets/js/projects-data.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/hero.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

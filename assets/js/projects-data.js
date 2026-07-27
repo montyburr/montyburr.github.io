@@ -5,6 +5,10 @@
 // `details` (array of paragraph strings) powers each project's own page at
 // project.html?id=<id> — linked automatically from its card.
 
+// Tags that describe a project's context rather than a skill. Kept out of the
+// Skills section and out of the hero's rotating tech line.
+const NON_SKILL_TAGS = new Set(["Team Project", "Internship"]);
+
 const PROJECTS = [
   {
     id: "ticket-triage",
