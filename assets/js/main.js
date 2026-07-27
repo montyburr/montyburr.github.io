@@ -115,13 +115,16 @@ function buildEducationEntry(entry) {
 
   const title = document.createElement("h3");
   title.className = "timeline__title";
-  title.textContent = entry.qualification;
+  // Without a qualification the institution is the heading, so don't repeat it.
+  title.textContent = entry.qualification || entry.institution;
   card.appendChild(title);
 
-  const institution = document.createElement("p");
-  institution.className = "timeline__institution";
-  institution.textContent = entry.institution;
-  card.appendChild(institution);
+  if (entry.qualification) {
+    const institution = document.createElement("p");
+    institution.className = "timeline__institution";
+    institution.textContent = entry.institution;
+    card.appendChild(institution);
+  }
 
   // period and status are both optional — neither is invented when absent.
   const meta = [entry.period, entry.status].filter(Boolean);
@@ -138,6 +141,38 @@ function buildEducationEntry(entry) {
     detail.textContent = entry.detail;
     card.appendChild(detail);
   }
+
+  (entry.subEntries || []).forEach((sub) => {
+    const block = document.createElement("div");
+    block.className = "timeline__sub";
+
+    if (sub.period) {
+      const period = document.createElement("p");
+      period.className = "timeline__sub-period";
+      period.textContent = sub.period;
+      block.appendChild(period);
+    }
+
+    if (sub.title) {
+      const subTitle = document.createElement("h4");
+      subTitle.className = "timeline__sub-title";
+      subTitle.textContent = sub.title;
+      block.appendChild(subTitle);
+    }
+
+    if (sub.results && sub.results.length) {
+      const list = document.createElement("ul");
+      list.className = "timeline__sub-list";
+      sub.results.forEach((result) => {
+        const li = document.createElement("li");
+        li.textContent = result;
+        list.appendChild(li);
+      });
+      block.appendChild(list);
+    }
+
+    card.appendChild(block);
+  });
 
   item.append(node, card);
   return item;

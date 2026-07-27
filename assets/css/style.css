@@ -915,6 +915,42 @@ main > section:not(.hero) {
   font-size: var(--fs-small);
 }
 
+/* Sub-entries — a qualification block within one institution. Deliberately
+   unbulleted so they read correctly on both sides of the alternating line. */
+.timeline__sub {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: var(--border-hairline) solid var(--c-border);
+}
+
+.timeline__sub-period {
+  margin: 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.timeline__sub-title {
+  margin: var(--space-3xs) 0 var(--space-2xs);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  color: var(--c-gold);
+}
+
+.timeline__sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
 /* --------------------------------------------------------------------------
    Achievements — two-column cards with a circular icon badge
    -------------------------------------------------------------------------- */

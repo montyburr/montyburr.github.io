@@ -1,16 +1,38 @@
 // Entries for the Education timeline, newest first.
 //
-// Only one entry exists so far — the degree already named in the hero eyebrow
-// and CLAUDE.md. `period` is null because no dates appear anywhere in the repo
-// and none were invented; fill it in (e.g. "2024 — present") and it renders
-// automatically. `detail` is an optional short paragraph.
+// `qualification` is optional — when it's absent the institution becomes the
+// card heading, which suits a school covering several qualifications. Those
+// are listed under `subEntries`, each with its own period and results.
 
 const EDUCATION = [
   {
     qualification: "BSc Computer Science with Cyber Security",
     institution: "Newcastle University",
-    status: "2nd year",
+    status: "3rd year",
     period: null,
     detail: null,
+  },
+  {
+    qualification: null,
+    institution: "Marlborough College",
+    status: null,
+    period: "2019–2024",
+    detail: null,
+    subEntries: [
+      {
+        title: "A Levels",
+        period: "2022–2024",
+        results: [
+          "Computer Science (A)",
+          "Mathematics (A)",
+          "Economics (B)",
+        ],
+      },
+      {
+        title: "GCSEs",
+        period: "2019–2022",
+        results: ["11 GCSEs: A*–A"],
+      },
+    ],
   },
 ];
