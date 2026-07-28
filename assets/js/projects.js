@@ -59,7 +59,14 @@
     tags.className = "project-row__tags";
     tags.textContent = (project.tags || []).join(" · ");
 
-    li.append(link, tags);
+    // The scroll-driven transform lives on this inner wrapper, not on the row
+    // itself, so it can't fight the row's hover/sibling-dimming opacity. The
+    // divider sits on it too, so the rule travels with the text it belongs to.
+    const inner = document.createElement("div");
+    inner.className = "project-row__inner";
+    inner.append(link, tags);
+
+    li.append(inner);
     return li;
   }
 

@@ -669,9 +669,15 @@ main > section:not(.hero) {
 }
 
 .project-row {
+  /* Layout box only. Padding, divider and the scroll transform all sit on
+     __inner so the two opacity systems (hover dimming here, scroll fade
+     there) multiply instead of overwriting each other. */
+  transition: opacity var(--dur-mid) ease;
+}
+
+.project-row__inner {
   border-bottom: var(--border-hairline) solid var(--c-border);
   padding-block: clamp(1.375rem, 3vw, 2.125rem);
-  transition: opacity var(--dur-mid) ease;
 }
 
 /* Hovering one row dims its siblings. 0.55 keeps the dimmed titles at 5.0:1
@@ -760,6 +766,52 @@ main > section:not(.hero) {
   color: var(--c-text-muted);
   font-size: var(--fs-small);
   letter-spacing: 0.02em;
+}
+
+/* Scroll-driven hand-off between rows.
+
+   Mirrors what tajmirul.site actually does (verified against its source): each
+   block is scrubbed along a Y-transform and opacity tied directly to scroll
+   position — rising into place on the way in, continuing up and fading on the
+   way out. There is no pinning and no clipping mask in the reference, and none
+   here: the page scrolls natively throughout and nothing is ever hidden behind
+   a transform. Because each row is driven by its own view progress, the row
+   leaving the top and the row arriving at the bottom overlap, which is what
+   reads as one block handing off to the next.
+
+   The @supports guard is load-bearing, not decoration. Without a timeline the
+   shorthand resolves to a 0s time-based animation with `both` fill, which would
+   park every row on the 100% keyframe — opacity 0, permanently invisible. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .project-row__inner {
+      /* Fill is deliberately `none`, not `both`. With `both` the row is parked
+         on the 0% keyframe — opacity 0 — any time the timeline isn't actively
+         ticking, which hides the content outright. `none` is visually
+         identical (outside the range the row is off-screen either way) but
+         fails back to plain visible text instead of to nothing. */
+      animation: project-row-handoff linear none;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes project-row-handoff {
+  0% {
+    opacity: 0;
+    transform: translateY(140px);
+  }
+  /* Settled for the middle of its pass through the viewport. */
+  30%,
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-140px);
+  }
 }
 
 /* Floating cover image — fixed to the upper right, independent of the rows,
