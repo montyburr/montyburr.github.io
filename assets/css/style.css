@@ -768,51 +768,8 @@ main > section:not(.hero) {
   letter-spacing: 0.02em;
 }
 
-/* Scroll-driven hand-off between rows.
-
-   Mirrors what tajmirul.site actually does (verified against its source): each
-   block is scrubbed along a Y-transform and opacity tied directly to scroll
-   position — rising into place on the way in, continuing up and fading on the
-   way out. There is no pinning and no clipping mask in the reference, and none
-   here: the page scrolls natively throughout and nothing is ever hidden behind
-   a transform. Because each row is driven by its own view progress, the row
-   leaving the top and the row arriving at the bottom overlap, which is what
-   reads as one block handing off to the next.
-
-   The @supports guard is load-bearing, not decoration. Without a timeline the
-   shorthand resolves to a 0s time-based animation with `both` fill, which would
-   park every row on the 100% keyframe — opacity 0, permanently invisible. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .project-row__inner {
-      /* Fill is deliberately `none`, not `both`. With `both` the row is parked
-         on the 0% keyframe — opacity 0 — any time the timeline isn't actively
-         ticking, which hides the content outright. `none` is visually
-         identical (outside the range the row is off-screen either way) but
-         fails back to plain visible text instead of to nothing. */
-      animation: project-row-handoff linear none;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-    }
-  }
-}
-
-@keyframes project-row-handoff {
-  0% {
-    opacity: 0;
-    transform: translateY(140px);
-  }
-  /* Settled for the middle of its pass through the viewport. */
-  30%,
-  72% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-140px);
-  }
-}
+/* The rows' scroll-driven hand-off lives with the rest of it under
+   "Scroll-driven hand-off" near the end of this file. */
 
 /* Floating cover image — fixed to the upper right, independent of the rows,
    trailing the active row's vertical position and cross-fading its content. */
@@ -1417,6 +1374,150 @@ main > section.project-detail {
 
 .footer__inner p {
   margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll-driven hand-off — site-wide
+
+   Mirrors what tajmirul.site actually does (verified against its source): each
+   block is scrubbed along a Y-transform and opacity tied directly to scroll
+   position — rising into place on the way in, continuing up and fading on the
+   way out. There is no pinning and no clipping mask in the reference, and none
+   here: the page scrolls natively throughout and nothing is ever hidden behind
+   a transform. Because each block is driven by its own view progress, the one
+   leaving the top and the one arriving at the bottom overlap, which is what
+   reads as one handing off to the next.
+
+   Everything is CSS. No JavaScript observes scroll for this, so there is
+   nothing to fall out of sync and nothing to run on the main thread.
+
+   Three variants, because "fade out on the way past" is wrong at the two ends
+   of the document:
+     handoff      in and out — the default, for anything with a screenful of
+                  content on both sides of it.
+     handoff-out  out only — the hero, which is already on screen at load and
+                  has nothing above it to arrive from.
+     handoff-in   in only — the tail of the document, which can never be
+                  scrolled far enough to finish an exit. Anything that ends its
+                  range stranded mid-fade would sit permanently half-visible.
+
+   --handoff-shift is the travel distance, set per block below. Larger for the
+   big display text, smaller for cards packed close together.
+
+   The @supports guard is load-bearing, not decoration. Without a timeline the
+   shorthand resolves to a 0s time-based animation, which would park every
+   block on its final keyframe. Fill is deliberately `none`, not `both`: `none`
+   leaves a block at its ordinary styles — visible — whenever the timeline
+   isn't ticking, which is what we want it to fail to.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .projects .section-title,
+    .skills .section-title,
+    .education .section-title,
+    .achievements .section-title,
+    .about__copy,
+    .about__panel,
+    .skill-card,
+    .achievement-card,
+    .project-row__inner,
+    .timeline__item {
+      animation: handoff linear none;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* The hero is on screen before any scrolling happens, so it can't be
+       driven by its own view progress — at scroll 0 it is already part-way
+       through that range and would render pre-faded. A root scroll timeline
+       measured in viewport heights starts at exactly 0 on load instead. */
+    .hero__inner {
+      --handoff-shift: 90px;
+      animation: handoff-out linear none;
+      animation-timeline: scroll(root block);
+      animation-range: 0 100vh;
+    }
+
+    /* Contact is the last thing before the footer. There is no screenful of
+       page beneath it to scroll it out with, so it only ever arrives. */
+    .contact__inner {
+      --handoff-shift: 100px;
+      animation: handoff-in linear none;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+
+    .project-row__inner {
+      --handoff-shift: 140px;
+    }
+
+    .projects .section-title,
+    .skills .section-title,
+    .education .section-title,
+    .achievements .section-title {
+      --handoff-shift: 80px;
+    }
+
+    .about__copy,
+    .about__panel {
+      --handoff-shift: 120px;
+    }
+
+    .skill-card,
+    .achievement-card {
+      --handoff-shift: 90px;
+    }
+
+    /* Kept short: the node dot rides with its card, and a long throw would
+       walk it noticeably up and down the centre line. */
+    .timeline__item {
+      --handoff-shift: 70px;
+    }
+  }
+}
+
+@keyframes handoff {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--handoff-shift));
+  }
+  /* Settled for the middle of its pass through the viewport. */
+  30%,
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(var(--handoff-shift) * -1));
+  }
+}
+
+@keyframes handoff-in {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--handoff-shift));
+  }
+  /* Lands before the range ends so it is settled, not still drifting, by the
+     time it is fully in view. */
+  80%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes handoff-out {
+  0%,
+  35% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(var(--handoff-shift) * -1));
+  }
 }
 
 /* --------------------------------------------------------------------------
