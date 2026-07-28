@@ -1071,6 +1071,13 @@ main > section:not(.hero) {
   font-size: var(--fs-small);
 }
 
+/* Set off from the results above by space alone — no dividing rule. */
+.timeline__sub-note {
+  margin: var(--space-2xs) 0 0;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
 /* --------------------------------------------------------------------------
    Achievements — two-column cards with a circular icon badge
    -------------------------------------------------------------------------- */

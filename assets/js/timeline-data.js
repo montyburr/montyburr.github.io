@@ -86,13 +86,9 @@ const TIMELINE = [
           "Mathematics (A)",
           "Economics (B)",
         ],
-      },
-      {
-        // No dates for the EPQ anywhere in the CV, so `period` is left out
-        // rather than assumed to run alongside the A Levels.
-        title: "EPQ",
-        period: null,
-        results: ["Level 3: Cyber Warfare (A*)"],
+        // Sits under the A Level results, separated by spacing rather than a
+        // rule. Kept out of `results` because an EPQ isn't an A Level.
+        note: "EPQ (Level 3): Cyber Warfare (A*)",
       },
       {
         title: "GCSEs",

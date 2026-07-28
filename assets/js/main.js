@@ -231,6 +231,14 @@ function buildTimelineEntry(entry) {
       block.appendChild(list);
     }
 
+    // A related qualification shown under the results without its own rule.
+    if (sub.note) {
+      const note = document.createElement("p");
+      note.className = "timeline__sub-note";
+      note.textContent = sub.note;
+      block.appendChild(note);
+    }
+
     card.appendChild(block);
   });
 
