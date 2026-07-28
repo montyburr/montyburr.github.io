@@ -1,5 +1,5 @@
 # macOS
 .DS_Store
 
-# Local preview / scratch
-__*.html
+# Local preview / scratch — anything prefixed __ is throwaway
+__*
