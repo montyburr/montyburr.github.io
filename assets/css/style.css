@@ -1157,11 +1157,99 @@ main > section:not(.hero) {
     box-shadow var(--dur-mid) ease, transform var(--dur-fast) var(--ease-out);
 }
 
+.contact__cv {
+  margin: var(--space-lg) 0 0;
+}
+
 .contact__socials a:hover {
   color: var(--c-gold);
   border-color: rgb(var(--c-gold-rgb) / 0.55);
   box-shadow: var(--glow-gold-soft);
   transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   CV page (cv.html)
+   -------------------------------------------------------------------------- */
+
+/* Scoped as `main > section.cv` to outrank the generic
+   `main > section:not(.hero)` rhythm, which would otherwise win on
+   specificity and pull the heading up under the fixed nav. */
+main > section.cv {
+  padding-block: calc(var(--nav-height) + var(--nav-float-gap) + var(--space-2xl))
+    var(--section-gap);
+}
+
+.cv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.cv-viewer {
+  position: relative;
+  height: min(85vh, 1150px);
+  border: var(--border-hairline) solid var(--c-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--c-bg-elevated);
+}
+
+.cv-viewer__doc {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.cv-viewer__fallback {
+  display: none;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  padding: var(--space-xl) var(--gutter);
+}
+
+.cv-viewer__note {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--c-text-muted);
+  font-size: var(--fs-small);
+}
+
+.cv-viewer__note strong {
+  color: var(--c-gold);
+  font-weight: 500;
+}
+
+.cv-viewer.is-unsupported {
+  height: auto;
+}
+
+.cv-viewer.is-unsupported .cv-viewer__doc {
+  display: none;
+}
+
+.cv-viewer.is-unsupported .cv-viewer__fallback {
+  display: grid;
+}
+
+/* Mobile browsers overwhelmingly can't render an embedded PDF, and fail by
+   showing a blank box rather than falling back — so don't offer the embed. */
+@media (max-width: 900px) {
+  .cv-viewer {
+    height: auto;
+  }
+
+  .cv-viewer__doc {
+    display: none;
+  }
+
+  .cv-viewer__fallback {
+    display: grid;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1205,8 +1293,10 @@ main > section:not(.hero) {
   flex-wrap: wrap;
 }
 
-.project-detail {
-  padding-block: calc(var(--nav-height) + var(--space-xl)) var(--space-2xl);
+/* Same specificity note as `main > section.cv` above. */
+main > section.project-detail {
+  padding-block: calc(var(--nav-height) + var(--nav-float-gap) + var(--space-xl))
+    var(--space-2xl);
 }
 
 .project-detail__back {
@@ -1352,10 +1442,13 @@ main > section:not(.hero) {
 }
 
 /* --------------------------------------------------------------------------
-   Responsive — the pill collapses below 768px
+   Responsive — the pill collapses below 840px
+
+   840 rather than 768: with six items the expanded pill is ~725px wide, which
+   leaves only ~24px of margin at 769px. Collapsing earlier keeps headroom.
    -------------------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 840px) {
   :root {
     --nav-float-gap: 0.75rem;
   }

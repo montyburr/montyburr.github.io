@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV — Monty Burr</title>
+  <meta name="description" content="CV for Monty Burr — BSc Computer Science with Cyber Security, Newcastle University.">
+  <link rel="preload" href="assets/fonts/playfair-display-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <nav class="nav-pill" aria-label="Primary">
+      <a class="nav-pill__brand" href="index.html#top">Monty Burr</a>
+      <button class="nav-pill__toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+        <span class="nav-pill__bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-pill__links" id="nav-menu">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#education">Education &amp; Experience</a></li>
+        <li><a class="is-active" href="cv.html" aria-current="page">CV</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="cv">
+      <div class="container">
+        <h2 class="section-title">CV</h2>
+
+        <div class="cv-actions">
+          <a class="btn btn--primary" href="assets/cv/monty-burr-cv.pdf" download="Monty-Burr-CV.pdf">Download CV</a>
+          <a class="btn btn--ghost" href="assets/cv/monty-burr-cv.pdf" target="_blank" rel="noopener">Open in new tab</a>
+        </div>
+
+        <!-- Inline viewer for browsers with a built-in PDF renderer; everything
+             else (most mobile) gets the fallback panel instead. -->
+        <div class="cv-viewer" id="cv-viewer">
+          <object class="cv-viewer__doc" data="assets/cv/monty-burr-cv.pdf#view=FitH"
+                  type="application/pdf" aria-label="CV for Monty Burr"></object>
+          <!-- No buttons repeated here — the two above already cover both
+               actions, and duplicating them just adds noise. -->
+          <div class="cv-viewer__fallback">
+            <p class="cv-viewer__note">
+              This browser can't display PDFs on the page.
+              Use <strong>Download CV</strong> or <strong>Open in new tab</strong> above.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer__inner">
+      <p>&copy; <span id="year"></span> Monty Burr</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/cv.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -61,7 +61,7 @@
     });
 
     // Leaving the collapsed breakpoint should never strand the menu open.
-    const wide = window.matchMedia("(min-width: 769px)");
+    const wide = window.matchMedia("(min-width: 841px)");
     const onWide = (event) => {
       if (event.matches) setOpen(false);
     };
