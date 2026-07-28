@@ -5,16 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monty Burr — Portfolio</title>
   <meta name="description" content="Monty Burr — BSc Computer Science with Cyber Security, Newcastle University. Coding projects showcasing a passion for cyber security.">
+  <link rel="preload" href="assets/fonts/playfair-display-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav container">
-      <a class="nav__brand" href="#top">Monty Burr</a>
-      <ul class="nav__links">
+  <header class="site-header" id="site-header">
+    <nav class="nav-pill" aria-label="Primary">
+      <a class="nav-pill__brand" href="#top">Monty Burr</a>
+      <button class="nav-pill__toggle" id="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+        <span class="nav-pill__bars" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-pill__links" id="nav-menu">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education &amp; Experience</a></li>
+        <li data-nav-achievements hidden><a href="#achievements">Achievements</a></li>
+        <li><a href="cv.html">CV</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -22,54 +31,129 @@
 
   <main>
     <section id="top" class="hero">
+      <canvas class="hero__particles" id="hero-particles" aria-hidden="true"></canvas>
+      <div class="hero__veil" aria-hidden="true"></div>
       <div class="container hero__inner">
         <p class="hero__eyebrow">BSc Computer Science with Cyber Security — Newcastle University</p>
         <h1 class="hero__title">Monty Burr's Portfolio</h1>
-        <p class="hero__tagline">Computer Science student with a passion for cyber security.</p>
+        <p class="hero__tagline">
+          <!-- Full sentence for assistive tech; the animated copy below is aria-hidden
+               so the typewriter isn't announced character by character. -->
+          <span class="visually-hidden">Computer Science student with a passion for cyber security.</span>
+          <span class="hero__type" id="hero-type" aria-hidden="true">Computer Science student with a passion for cyber security.</span><span class="hero__caret" id="hero-caret" aria-hidden="true" hidden></span>
+        </p>
         <div class="hero__cta">
           <a class="btn btn--primary" href="#projects">View Projects</a>
+          <a class="btn btn--ghost" href="cv.html">View CV</a>
           <a class="btn btn--ghost" href="mailto:montyburr@hotmail.co.uk">Get in touch</a>
         </div>
       </div>
     </section>
 
     <section id="about" class="about">
-      <div class="container">
-        <h2 class="section-title">About</h2>
-        <p class="about__text">
-          I'm a Computer Science student with a passion for cyber security. This page
-          is where I show off the projects I've built along the way.
-        </p>
+      <div class="container about__inner">
+        <div class="about__copy">
+          <h2 class="section-title">About</h2>
+          <p class="about__text">
+            Currently studying Computer Science with a focus on cyber security and 
+            threat intelligence, I have built a solid foundation in programming, 
+            data structures, and secure system design. My coursework and independent 
+            projects have developed my interest in how technology can be used to 
+            predict, prevent, and defend against digital threats, and I am now 
+            looking to apply that knowledge in a professional environment where I 
+            can contribute to real-world security challenges. This page
+            is where I show off the projects I've built along the way.
+          </p>
+        </div>
+        <div class="about__panel" aria-hidden="true">
+          <span class="about__glyph">&lt;/&gt;</span>
+        </div>
       </div>
     </section>
 
     <section id="skills" class="skills">
       <div class="container">
         <h2 class="section-title">Skills</h2>
-        <ul id="skills-list" class="skills-list"></ul>
+        <div id="skills-grid" class="skills-grid"></div>
       </div>
     </section>
 
     <section id="projects" class="projects">
       <div class="container">
         <h2 class="section-title">Projects</h2>
-        <div id="project-grid" class="project-grid"></div>
+        <ol id="project-list" class="project-list"></ol>
+      </div>
+      <!-- Floating hover preview, positioned independently of the rows. -->
+      <div id="project-preview" class="project-preview" aria-hidden="true">
+        <img class="project-preview__img" alt="" decoding="async">
+        <img class="project-preview__img" alt="" decoding="async">
+      </div>
+    </section>
+
+    <section id="education" class="education">
+      <div class="container">
+        <h2 class="section-title">Education &amp; Experience</h2>
+        <div id="education-timeline" class="timeline"></div>
+      </div>
+    </section>
+
+    <section id="achievements" class="achievements" hidden>
+      <div class="container">
+        <h2 class="section-title">Achievements</h2>
+        <div id="achievements-grid" class="achievements-grid"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container contact__inner">
+        <h2 class="section-title">Contact</h2>
+        <p class="contact__line">
+          <a href="mailto:montyburr@hotmail.co.uk">montyburr@hotmail.co.uk</a>
+        </p>
+        <ul class="contact__socials">
+          <li>
+            <a href="https://github.com/montyburr" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:montyburr@hotmail.co.uk" aria-label="Email">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3 6.5h18v11H3z"/>
+                <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m3.5 7 8.5 6 8.5-6"/>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/montyburr/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.71h.05c.53-.95 1.83-1.96 3.77-1.96 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.07-1.9-3.07-1.9 0-2.19 1.46-2.19 2.97V21h-4V9Z"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <p class="contact__cv">
+          <a class="btn btn--ghost" href="cv.html">View CV</a>
+        </p>
       </div>
     </section>
   </main>
 
-  <footer id="contact" class="site-footer">
+  <footer class="site-footer">
     <div class="container footer__inner">
       <p>&copy; <span id="year"></span> Monty Burr</p>
-      <ul class="footer__links">
-        <li><a href="https://github.com/montyburr" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="mailto:montyburr@hotmail.co.uk">Email</a></li>
-        <li><a href="https://www.linkedin.com/in/montyburr/" target="_blank" rel="noopener">LinkedIn</a></li>
-      </ul>
     </div>
   </footer>
 
   <script src="assets/js/projects-data.js"></script>
+  <script src="assets/js/skills-data.js"></script>
+  <script src="assets/js/timeline-data.js"></script>
+  <script src="assets/js/achievements-data.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/hero.js"></script>
+  <script src="assets/js/projects.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

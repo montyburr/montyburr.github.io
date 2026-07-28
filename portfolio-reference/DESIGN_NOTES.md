@@ -202,3 +202,27 @@ the next row.
   functioning name+email+message contact **form** (yours is currently mailto links). I'm not
   filling these with placeholder text — flagging them for you in the chat now that this is
   written, per your instruction.
+
+---
+
+## Decisions (confirmed by repo owner, before any code was written)
+
+1. **Projects section**: keep it to the existing `details` paragraphs already in
+   `projects-data.js`. Do **not** build website1's 4-column Problem/Architecture/Challenges
+   Solved/What I Learned case-study grid — there's no content for it and none should be invented.
+2. **Achievements section**: add it structurally (heading, card layout, icon-badge shape) but
+   leave it with no copy for now — the repo owner will supply real achievements later. Do not
+   invent placeholder achievements.
+3. **Contact section**: no functioning form. Keep the existing contact links (mailto/GitHub/
+   LinkedIn), restyled to match the new design — do not build website1's Name/Email/Message form.
+4. **Scope split between the two references**: website1 is the base design language for the
+   *entire* site — palette, typography, nav behavior, buttons, card treatment, particle effect,
+   spacing, all of it. website2 is used *only* for the Projects section's specific hover-reveal-
+   preview row/list interaction pattern (recoloured to gold, retypeset to website1's type scale
+   per the original brief) — nothing else from website2 carries over anywhere else on the site.
+
+## Build order
+
+Per the working agreement: build in a branch (`feature/v1-design`), hero first, stop and show it
+before continuing to the rest of the page. Commit in logical chunks with real messages. Keep the
+existing stack — plain HTML/CSS/JS, no build step, no framework.
