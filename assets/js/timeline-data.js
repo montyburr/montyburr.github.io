@@ -22,7 +22,7 @@ const TIMELINE = [
     institution: "Newcastle University",
     status: "3rd year",
     period: "2024 – Present",
-    detail: null,
+    detail: "First year result: First Class (average 83.3%).",
   },
   {
     type: "experience",
@@ -86,6 +86,13 @@ const TIMELINE = [
           "Mathematics (A)",
           "Economics (B)",
         ],
+      },
+      {
+        // No dates for the EPQ anywhere in the CV, so `period` is left out
+        // rather than assumed to run alongside the A Levels.
+        title: "EPQ",
+        period: null,
+        results: ["Level 3: Cyber Warfare (A*)"],
       },
       {
         title: "GCSEs",
