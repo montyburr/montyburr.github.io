@@ -37,7 +37,7 @@ const TIMELINE = [
   {
     type: "experience",
     role: "Crew Member",
-    organisation: "Arundel Marquee Hire",
+    organisation: "Arundel Marquees",
     engagement: "Part-time",
     period: "Jun 2025 – Jul 2025",
     location: "Arundel, England, United Kingdom · On-site",
