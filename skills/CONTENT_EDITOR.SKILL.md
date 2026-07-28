@@ -4,7 +4,8 @@ Purpose:
 - Guide agents that edit the site's content (pages, project data, and imagery).
 
 Scope:
-- Allowed files: `index.html`, `README.md`, `assets/js/projects-data.js`, `assets/css/style.css`, files in `assets/img/`.
+- Allowed files: `index.html`, `project.html`, `README.md`, `assets/js/projects-data.js`, `assets/css/style.css`, files in `assets/img/`.
+- `project.html` + `assets/js/project-detail.js` form one template driven by `projects-data.js` — each project's own page (`project.html?id=<id>`) and the Skills section come from that same data, so adding/editing a project's `tags` and `details` there updates both automatically. No new HTML files needed per project.
 - Avoid changes to build tooling or CI.
 
 Guidelines:

@@ -54,8 +54,15 @@ function buildLinks(project) {
 }
 
 function createProjectCard(project) {
+  const tilt = document.createElement("div");
+  tilt.className = "project-tilt";
+
   const card = document.createElement("article");
   card.className = "project-card";
+
+  const glass = document.createElement("div");
+  glass.className = "project-card__glass";
+  glass.setAttribute("aria-hidden", "true");
 
   const body = document.createElement("div");
   body.className = "project-card__body";
@@ -67,10 +74,16 @@ function createProjectCard(project) {
   blurb.className = "project-card__blurb";
   blurb.textContent = project.blurb;
 
-  body.append(title, buildTags(project.tags), blurb, buildLinks(project));
-  card.append(buildMedia(project.media), body);
+  const overlay = document.createElement("a");
+  overlay.className = "project-card__link-overlay";
+  overlay.href = `project.html?id=${project.id}`;
+  overlay.setAttribute("aria-label", `View details for ${project.title}`);
 
-  return card;
+  body.append(title, buildTags(project.tags), blurb, buildLinks(project));
+  card.append(buildMedia(project.media), body, glass, overlay);
+  tilt.append(card);
+
+  return tilt;
 }
 
 function renderProjects() {
@@ -79,10 +92,52 @@ function renderProjects() {
   PROJECTS.forEach((project) => grid.appendChild(createProjectCard(project)));
 }
 
+// Tags that describe a project's context rather than a skill (kept out of the Skills section).
+const NON_SKILL_TAGS = new Set(["Team Project", "Internship"]);
+
+function renderSkills() {
+  const list = document.getElementById("skills-list");
+  if (!list) return;
+  const skills = [...new Set(PROJECTS.flatMap((project) => project.tags))].filter(
+    (tag) => !NON_SKILL_TAGS.has(tag)
+  );
+  skills.forEach((skill) => {
+    const li = document.createElement("li");
+    li.textContent = skill;
+    list.appendChild(li);
+  });
+}
+
 function setYear() {
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 }
 
+function observeProjectCards() {
+  const cards = document.querySelectorAll(".project-card");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    cards.forEach((card) => card.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+  );
+
+  cards.forEach((card) => observer.observe(card));
+}
+
 renderProjects();
+renderSkills();
 setYear();
+observeProjectCards();
