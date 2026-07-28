@@ -100,30 +100,45 @@ function renderSkills() {
   }
 }
 
-/* --- Education ---------------------------------------------------------- */
+/* --- Education & Experience timeline ------------------------------------ */
 
-function buildEducationEntry(entry) {
+function buildTimelineEntry(entry) {
+  const isExperience = entry.type === "experience";
+  const kind = isExperience ? "experience" : "education";
+
   const item = document.createElement("div");
-  item.className = "timeline__item";
+  item.className = `timeline__item timeline__item--${kind}`;
 
   const node = document.createElement("span");
-  node.className = "timeline__node";
+  node.className = `timeline__node timeline__node--${kind}`;
   node.setAttribute("aria-hidden", "true");
 
   const card = document.createElement("article");
-  card.className = "timeline__card card-spotlight";
+  card.className = `timeline__card timeline__card--${kind} card-spotlight`;
+
+  const kicker = document.createElement("p");
+  kicker.className = "timeline__kicker";
+  kicker.textContent = isExperience ? "Experience" : "Education";
+  card.appendChild(kicker);
 
   const title = document.createElement("h3");
   title.className = "timeline__title";
-  // Without a qualification the institution is the heading, so don't repeat it.
-  title.textContent = entry.qualification || entry.institution;
+  // For education without a qualification the institution is the heading, so
+  // it isn't repeated on the line below.
+  title.textContent = isExperience
+    ? entry.role
+    : entry.qualification || entry.institution;
   card.appendChild(title);
 
-  if (entry.qualification) {
-    const institution = document.createElement("p");
-    institution.className = "timeline__institution";
-    institution.textContent = entry.institution;
-    card.appendChild(institution);
+  const subtitle = isExperience
+    ? [entry.organisation, entry.engagement].filter(Boolean).join(" · ")
+    : entry.qualification && entry.institution;
+
+  if (subtitle) {
+    const subtitleEl = document.createElement("p");
+    subtitleEl.className = "timeline__institution";
+    subtitleEl.textContent = subtitle;
+    card.appendChild(subtitleEl);
   }
 
   // period and status are both optional — neither is invented when absent.
@@ -133,6 +148,13 @@ function buildEducationEntry(entry) {
     metaEl.className = "timeline__meta";
     metaEl.textContent = meta.join(" · ");
     card.appendChild(metaEl);
+  }
+
+  if (entry.location) {
+    const location = document.createElement("p");
+    location.className = "timeline__location";
+    location.textContent = entry.location;
+    card.appendChild(location);
   }
 
   if (entry.detail) {
@@ -178,12 +200,12 @@ function buildEducationEntry(entry) {
   return item;
 }
 
-function renderEducation() {
+function renderTimeline() {
   const timeline = document.getElementById("education-timeline");
-  if (!timeline || typeof EDUCATION === "undefined") return;
+  if (!timeline || typeof TIMELINE === "undefined") return;
 
   const section = timeline.closest("section");
-  if (!EDUCATION.length) {
+  if (!TIMELINE.length) {
     if (section) section.hidden = true;
     return;
   }
@@ -193,7 +215,7 @@ function renderEducation() {
   progress.setAttribute("aria-hidden", "true");
   timeline.appendChild(progress);
 
-  EDUCATION.forEach((entry) => timeline.appendChild(buildEducationEntry(entry)));
+  TIMELINE.forEach((entry) => timeline.appendChild(buildTimelineEntry(entry)));
 
   trackTimelineProgress(timeline, progress);
 }
@@ -325,7 +347,7 @@ function setYear() {
 // card motion.
 
 renderSkills();
-renderEducation();
+renderTimeline();
 renderAchievements();
 initCardSpotlight();
 setYear();
