@@ -388,9 +388,10 @@ function setYear() {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 }
 
-// No section entrance animation by design — DESIGN_NOTES §7 found the
-// reference's cards already in place between frames, with hover as the only
-// card motion.
+// Nothing here observes scroll. The site-wide entrance/exit motion is pure CSS
+// (see "Scroll-driven hand-off" in style.css), which supersedes DESIGN_NOTES §7
+// — that section read the reference's cards as already in place between frames,
+// but the reference does scrub them on scroll.
 
 renderSkills();
 renderTimeline();

@@ -1,5 +1,13 @@
 # Design Notes — reference analysis
 
+> **The source frames are no longer in the working tree.** They were 8.1MB of
+> input material that GitHub Pages was serving publicly, so they were removed
+> once the redesign was finished. They are still in git history — the last
+> commit containing them is `7332f82`, and any frame can be recovered with
+> `git show 7332f82:portfolio-reference/website1/w1_012s.png > frame.png`.
+> This document is kept because it records *why* the site looks the way it
+> does. Paths below refer to the frames as they were.
+
 Source: `portfolio-reference/website1/` (21 frames, `w1_000s.png`–`w1_040s.png`, every 2s of a
 42s scroll-through) and `portfolio-reference/website2/` (15 frames, `w2_000s.png`–`w2_014s.png`,
 every 1s of a 15s hover interaction on a projects list). Note: the brief referred to a `reference/`

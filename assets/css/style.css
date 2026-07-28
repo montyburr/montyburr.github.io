@@ -1,6 +1,7 @@
 /* ==========================================================================
    Monty Burr — portfolio
-   Design language sampled from portfolio-reference/website1 (see DESIGN_NOTES.md).
+   Design language sampled from the website1 reference frames — see
+   DESIGN_NOTES.md, which records the sampled values and the reasoning.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -1708,15 +1709,5 @@ main > section.project-detail {
 
   .hero__tagline {
     min-height: 0;
-  }
-
-  .project-card {
-    opacity: 1;
-    transform: none;
-  }
-
-  .project-tilt:hover .project-card,
-  .project-tilt:focus-within .project-card {
-    transform: none;
   }
 }
