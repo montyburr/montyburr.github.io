@@ -896,24 +896,73 @@ main > section:not(.hero) {
   padding: clamp(1.375rem, 2.5vw, 1.75rem);
 }
 
-/* Education keeps the flat elevated card fill; experience gets a gold-washed
-   fill and warmer border, so the two are distinguishable at a glance. */
+/* The two kinds are deliberately different objects, not two tints of one:
+   education is an outlined ghost card, experience is a solid card with a gold
+   accent edge running down the side that faces the timeline. */
 .timeline__card--education {
-  background: var(--c-bg-elevated);
+  background: transparent;
+  border-color: var(--c-border);
 }
 
 .timeline__card--experience {
-  background: linear-gradient(
-      180deg,
-      rgb(var(--c-gold-rgb) / 0.08),
-      rgb(var(--c-gold-rgb) / 0.02)
-    ),
-    var(--c-bg-elevated);
-  border-color: rgb(var(--c-gold-rgb) / 0.3);
+  background: var(--c-bg-elevated);
+  border-color: rgb(var(--c-gold-rgb) / 0.32);
+}
+
+.timeline__card--experience::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--c-gold);
+}
+
+/* The accent edge always sits on the side nearest the centre line. */
+.timeline__item:nth-of-type(odd) .timeline__card--experience::after {
+  right: 0;
+}
+
+.timeline__item:nth-of-type(even) .timeline__card--experience::after {
+  left: 0;
+}
+
+.timeline__head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: var(--space-2xs);
+}
+
+/* Right-aligned cards put the badge on the outside edge too. */
+.timeline__item:nth-of-type(odd) .timeline__head {
+  flex-direction: row-reverse;
+}
+
+.timeline__badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: var(--border-hairline) solid;
+}
+
+.timeline__card--education .timeline__badge {
+  border-color: var(--c-border-strong);
+  background: rgb(var(--c-display-rgb) / 0.03);
+  color: var(--c-text-muted);
+}
+
+.timeline__card--experience .timeline__badge {
+  border-color: rgb(var(--c-gold-rgb) / 0.45);
+  background: rgb(var(--c-gold-rgb) / 0.1);
+  color: var(--c-gold);
 }
 
 .timeline__kicker {
-  margin: 0 0 var(--space-2xs);
+  margin: 0;
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -958,6 +1007,31 @@ main > section:not(.hero) {
   margin: var(--space-xs) 0 0;
   color: var(--c-text-muted);
   font-size: var(--fs-small);
+}
+
+/* Skill chips — experience only, which is another thing telling the two
+   card kinds apart. */
+.timeline__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+}
+
+.timeline__item:nth-of-type(odd) .timeline__skills {
+  justify-content: flex-end;
+}
+
+.timeline__skills li {
+  padding: 0.2rem 0.6rem;
+  border: var(--border-hairline) solid rgb(var(--c-gold-rgb) / 0.22);
+  border-radius: var(--radius-pill);
+  background: rgb(var(--c-gold-rgb) / 0.09);
+  color: var(--c-gold);
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 /* Sub-entries — a qualification block within one institution. Deliberately
@@ -1238,6 +1312,20 @@ main > section:not(.hero) {
   .timeline__item:nth-of-type(even) .timeline__node {
     left: 1px;
     right: auto;
+  }
+
+  /* Everything is left-aligned here, so the flipped variants reset. */
+  .timeline__item:nth-of-type(odd) .timeline__head {
+    flex-direction: row;
+  }
+
+  .timeline__item:nth-of-type(odd) .timeline__skills {
+    justify-content: flex-start;
+  }
+
+  .timeline__item:nth-of-type(odd) .timeline__card--experience::after {
+    right: auto;
+    left: 0;
   }
 }
 

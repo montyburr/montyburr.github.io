@@ -1,20 +1,29 @@
 // Entries for the combined Education & Experience timeline.
-// Order here is the order rendered — sorted by start date, most recent first.
 //
-// `type` is "education" or "experience" and drives a distinct card treatment
-// and node shape for each.
+// Order here is the order rendered: the current degree is pinned first as the
+// headline credential, and everything after it runs by start date, most recent
+// first.
+//
+// `type` is "education" or "experience" and drives a distinct card treatment,
+// icon and node shape for each.
 //
 // education: `qualification` is optional — when it's absent the institution
 //   becomes the card heading, which suits a school covering several
 //   qualifications. Those are listed under `subEntries`.
 // experience: `role` is the heading, with `organisation` and `engagement`
-//   beneath it.
+//   beneath it, plus an optional `skills` list.
 //
-// Durations ("2 mos") are deliberately not stored — they go stale. The
-// LinkedIn skill tags are omitted because only the first two of each set were
-// visible ("and +3 skills"); add them once the full lists are to hand.
+// Durations ("2 mos") are deliberately not stored — they go stale.
 
 const TIMELINE = [
+  {
+    type: "education",
+    qualification: "BSc Computer Science with Cyber Security",
+    institution: "Newcastle University",
+    status: "3rd year",
+    period: "2024 – Present",
+    detail: null,
+  },
   {
     type: "experience",
     role: "Digital Intern",
@@ -23,6 +32,7 @@ const TIMELINE = [
     period: "Jun 2026 – Present",
     location: "On-site",
     detail: null,
+    skills: [],
   },
   {
     type: "experience",
@@ -33,27 +43,32 @@ const TIMELINE = [
     location: "Arundel, England, United Kingdom · On-site",
     detail:
       "Worked in the construction and de-construction of Marquee tents for a wide range of events",
-  },
-  {
-    // Undated in the repo, so its position here is an assumption: Marlborough
-    // ended 2024 and this is the 3rd year, which puts the start at 2024. Fill
-    // `period` in to make that explicit rather than inferred.
-    type: "education",
-    qualification: "BSc Computer Science with Cyber Security",
-    institution: "Newcastle University",
-    status: "3rd year",
-    period: null,
-    detail: null,
+    skills: [
+      "Teamwork",
+      "Time Management",
+      "Communication",
+      "Leadership",
+      "Customer Service",
+    ],
   },
   {
     type: "experience",
     role: "Work experience",
     organisation: "AJW Group",
-    engagement: "Indirect Contract",
+    engagement: null,
     period: "Jul 2023 – Aug 2023",
     location: "Slinfold, England, United Kingdom · On-site",
     detail:
       "Work experience within the IT department of AJ Walter Aviation where I was able to be involved with the multiple different teams in this department.",
+    skills: [
+      "Data Analysis",
+      "Customer Service",
+      "Java",
+      "Python (Programming Language)",
+      "Programming",
+      "Cybersecurity",
+      "Cyber Defense",
+    ],
   },
   {
     type: "education",

@@ -102,6 +102,21 @@ function renderSkills() {
 
 /* --- Education & Experience timeline ------------------------------------ */
 
+const TIMELINE_ICONS = {
+  education:
+    '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M12 4 2 9l10 5 10-5-10-5Z"/>' +
+    '<path d="M6 11.2V16c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6v-4.8"/>' +
+    '<path d="M22 9v4.5"/></svg>',
+  experience:
+    '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><rect x="2.75" y="7.25" width="18.5" height="12.5" rx="2"/>' +
+    '<path d="M8.75 7.25V6a2 2 0 0 1 2-2h2.5a2 2 0 0 1 2 2v1.25"/>' +
+    '<path d="M2.75 12.5h18.5"/></svg>',
+};
+
 function buildTimelineEntry(entry) {
   const isExperience = entry.type === "experience";
   const kind = isExperience ? "experience" : "education";
@@ -116,10 +131,22 @@ function buildTimelineEntry(entry) {
   const card = document.createElement("article");
   card.className = `timeline__card timeline__card--${kind} card-spotlight`;
 
+  // Icon badge + label, so the two kinds are separable at a glance even where
+  // the node on the line isn't beside the card (mobile).
+  const head = document.createElement("div");
+  head.className = "timeline__head";
+
+  const badge = document.createElement("span");
+  badge.className = "timeline__badge";
+  badge.setAttribute("aria-hidden", "true");
+  badge.innerHTML = TIMELINE_ICONS[kind];
+
   const kicker = document.createElement("p");
   kicker.className = "timeline__kicker";
   kicker.textContent = isExperience ? "Experience" : "Education";
-  card.appendChild(kicker);
+
+  head.append(badge, kicker);
+  card.appendChild(head);
 
   const title = document.createElement("h3");
   title.className = "timeline__title";
@@ -162,6 +189,17 @@ function buildTimelineEntry(entry) {
     detail.className = "timeline__detail";
     detail.textContent = entry.detail;
     card.appendChild(detail);
+  }
+
+  if (entry.skills && entry.skills.length) {
+    const skills = document.createElement("ul");
+    skills.className = "timeline__skills";
+    entry.skills.forEach((skill) => {
+      const li = document.createElement("li");
+      li.textContent = skill;
+      skills.appendChild(li);
+    });
+    card.appendChild(skills);
   }
 
   (entry.subEntries || []).forEach((sub) => {
