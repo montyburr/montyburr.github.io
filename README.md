@@ -14,13 +14,24 @@ for the full smoke-test checklist.
 
 ## Structure
 
-- `index.html` — landing page (about, auto-generated skills list, project grid)
+- `index.html` — landing page: hero, about, skills, projects, education & experience, contact
 - `project.html` — single template for every project's own page (`project.html?id=<id>`),
   rendered by `assets/js/project-detail.js` from the same project data
+- `cv.html` — CV download plus an inline PDF viewer (`assets/js/cv.js`)
 - `assets/css/style.css`, `assets/js/` — styles and rendering logic
-- `assets/js/projects-data.js` — edit this to add/update project cards; `tags` feed the
-  Skills section and `details` feed each project's own page, both automatically
 - `assets/img/` — images (compressed; no raw screen recordings)
+- `assets/fonts/` — self-hosted woff2 latin subsets (see `assets/fonts/README.md`)
+- `assets/cv/` — the CV PDF
+- `DESIGN_NOTES.md` — where the colours, type and interactions came from
+
+Content lives in four data files, all plain `const` arrays with no build step:
+
+- `assets/js/projects-data.js` — projects; `tags` feed the Skills section and
+  `details` feed each project's own page, both automatically
+- `assets/js/timeline-data.js` — the combined Education & Experience timeline
+- `assets/js/skills-data.js` — the category groupings for the Skills cards
+- `assets/js/achievements-data.js` — empty by design; the section and its nav
+  link stay hidden until it has entries
 
 ## Editing content
 

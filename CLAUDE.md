@@ -1,9 +1,12 @@
 # Portfolio Site
 
 ## What this is
-Personal portfolio for Monty Burr — 2nd-year BSc Computer Science with Cyber Security,
+Personal portfolio for Monty Burr — 3rd-year BSc Computer Science with Cyber Security,
 Newcastle University. Showcases coding projects with screenshots and
 short screen recordings. Hosted on GitHub Pages.
+
+The year of study is stored once, in `assets/js/timeline-data.js`. That file is
+the source of truth — update it there, not here.
 
 ## Stack
 - Plain static HTML/CSS/JS. NO build step, NO framework, NO npm.
@@ -12,9 +15,13 @@ short screen recordings. Hosted on GitHub Pages.
 - Clean, modern, professional. Dark theme leaning. Recruiter-facing.
 
 ## Structure
-- index.html (landing + about + project grid)
-- /assets for images (WebP/compressed) and video
-- One card per project: title, 2-3 line blurb, tech tags, screenshot/GIF, links (GitHub + live demo if any)
+- index.html — hero, about, skills, projects, education & experience, contact
+- project.html?id=<id> and cv.html are the only other pages
+- /assets for images (WebP/compressed), video, fonts and the CV PDF
+- Projects render as a numbered row list with a floating cover image on hover,
+  not a card grid. One entry per project in `assets/js/projects-data.js`:
+  title, 2-3 line blurb, tech tags, screenshot/GIF, links (GitHub + live demo if any)
+- See README.md for the four data files and DESIGN_NOTES.md for the visual rationale
 
 ## Projects to feature
 - IT Support Ticket Triage Dashboard — React/FastAPI, AI-powered triage suggestions
