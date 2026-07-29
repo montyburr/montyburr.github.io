@@ -215,8 +215,12 @@
      Rotating typewriter tagline
 
      Every phrase comes from content already in the repo: the tagline written
-     in index.html, then the real project tags from projects-data.js in the
-     order they are declared, chunked into readable lines. Nothing invented.
+     in index.html, then one line per technical group from skills-data.js, in
+     the order they are declared. Nothing invented.
+
+     This used to read the tech tags off projects-data.js. Those were removed
+     when the stack moved to living in exactly one place, so it reads the Tech
+     Stack list instead — which is now the single source for it.
      ====================================================================== */
 
   const TYPE = {
@@ -224,25 +228,21 @@
     eraseMs: 24,
     holdMs: 2100, // pause on a completed phrase
     gapMs: 420, // pause after erasing, before the next phrase
-    tagsPerLine: 5,
   };
 
   function buildPhrases(seed) {
     const phrases = [seed];
 
-    if (typeof PROJECTS === "undefined" || !Array.isArray(PROJECTS)) {
+    if (typeof SKILL_CATEGORIES === "undefined" || !Array.isArray(SKILL_CATEGORIES)) {
       return phrases;
     }
 
-    const skipped =
-      typeof NON_SKILL_TAGS !== "undefined" ? NON_SKILL_TAGS : new Set();
-
-    const tags = [...new Set(PROJECTS.flatMap((project) => project.tags || []))]
-      .filter((tag) => !skipped.has(tag));
-
-    for (let i = 0; i < tags.length; i += TYPE.tagsPerLine) {
-      phrases.push(tags.slice(i, i + TYPE.tagsPerLine).join(" · "));
-    }
+    SKILL_CATEGORIES.forEach((category) => {
+      // `technical: false` marks a group as not belonging in a tech line.
+      if (category.technical === false) return;
+      const skills = category.skills || [];
+      if (skills.length) phrases.push(skills.join(" · "));
+    });
 
     return phrases;
   }

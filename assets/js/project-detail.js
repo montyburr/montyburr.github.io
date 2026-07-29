@@ -22,9 +22,6 @@
     const heading = document.createElement("h1");
     heading.textContent = project.title;
 
-    const tags = buildTags(project.tags);
-    tags.classList.add("project-detail__tags");
-
     const media = buildMedia(project.media);
     media.classList.add("project-detail__media");
 
@@ -43,7 +40,7 @@
     if (project.links?.demo) links.appendChild(makeLink(project.links.demo, "Live Demo"));
     if (project.writeup) links.appendChild(makeLink(project.writeup, "Read Write-up"));
 
-    container.append(heading, tags, media, body, links);
+    container.append(heading, media, body, links);
   }
 
   function init() {

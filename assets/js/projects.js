@@ -55,16 +55,15 @@
 
     link.append(num, title, icon);
 
-    const tags = document.createElement("p");
-    tags.className = "project-row__tags";
-    tags.textContent = (project.tags || []).join(" · ");
+    // No tech tags on the row by design — the stack is listed once, in the
+    // Skillset section, rather than repeated under every project.
 
     // The scroll-driven transform lives on this inner wrapper, not on the row
     // itself, so it can't fight the row's hover/sibling-dimming opacity. The
     // divider sits on it too, so the rule travels with the text it belongs to.
     const inner = document.createElement("div");
     inner.className = "project-row__inner";
-    inner.append(link, tags);
+    inner.append(link);
 
     li.append(inner);
     return li;

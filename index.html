@@ -19,7 +19,7 @@
       </button>
       <ul class="nav-pill__links" id="nav-menu">
         <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
+        <li><a href="#skillset">Skillset</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#education">Education &amp; Experience</a></li>
         <li data-nav-achievements hidden><a href="#achievements">Achievements</a></li>
@@ -71,10 +71,36 @@
       </div>
     </section>
 
-    <section id="skills" class="skills">
-      <div class="container">
-        <h2 class="section-title">Skills</h2>
-        <div id="skills-grid" class="skills-grid"></div>
+    <section id="skillset" class="skillset">
+      <div class="container skillset__inner">
+        <h2 class="section-title">Skill Set</h2>
+
+        <div class="skillset__tabs" role="tablist" aria-label="Skillset view">
+          <button class="skillset__tab is-active" type="button" role="tab"
+                  id="skillset-tab-skills" aria-controls="skillset-panel-skills"
+                  aria-selected="true">
+            <svg class="skillset__tab-icon" viewBox="0 0 24 24" width="15" height="15"
+                 aria-hidden="true" focusable="false">
+              <path fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linejoin="round" d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>
+            </svg>Skills
+          </button>
+          <button class="skillset__tab" type="button" role="tab"
+                  id="skillset-tab-tools" aria-controls="skillset-panel-tools"
+                  aria-selected="false" tabindex="-1">
+            <svg class="skillset__tab-icon" viewBox="0 0 24 24" width="15" height="15"
+                 aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"
+                    d="M12 2.8l1.6 2.3 2.7-.7.5 2.8 2.6 1-1.3 2.5 1.8 2.2-2.3 1.6.2 2.8-2.8.2-1.2 2.5-2.4-1.4-2.4 1.4-1.2-2.5-2.8-.2.2-2.8L2.3 13l1.8-2.2L2.8 8.3l2.6-1 .5-2.8 2.7.7L10.2 2.8Z"/>
+            </svg>Tools
+          </button>
+        </div>
+
+        <div id="skillset-panel-skills" class="skillset__grid" role="tabpanel"
+             aria-labelledby="skillset-tab-skills"></div>
+        <div id="skillset-panel-tools" class="skillset__grid" role="tabpanel"
+             aria-labelledby="skillset-tab-tools" hidden></div>
       </div>
     </section>
 
