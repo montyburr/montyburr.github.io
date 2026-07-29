@@ -24,17 +24,6 @@ function buildMedia(media) {
   return wrap;
 }
 
-function buildTags(tags) {
-  const ul = document.createElement("ul");
-  ul.className = "project-card__tags";
-  tags.forEach((tag) => {
-    const li = document.createElement("li");
-    li.textContent = tag;
-    ul.appendChild(li);
-  });
-  return ul;
-}
-
 function makeLink(href, label) {
   const a = document.createElement("a");
   a.href = href;
@@ -45,59 +34,115 @@ function makeLink(href, label) {
   return a;
 }
 
-// NON_SKILL_TAGS lives in projects-data.js — the hero's tech line uses it too.
+/* --- Skillset ----------------------------------------------------------- */
 
-/* --- Skills ------------------------------------------------------------- */
-
-function projectSkillTags() {
-  if (typeof PROJECTS === "undefined") return [];
-  const skipped = typeof NON_SKILL_TAGS !== "undefined" ? NON_SKILL_TAGS : new Set();
-  return [...new Set(PROJECTS.flatMap((project) => project.tags || []))].filter(
-    (tag) => !skipped.has(tag)
-  );
-}
-
-function buildSkillCard(name, tags) {
-  const card = document.createElement("article");
-  card.className = "skill-card card-spotlight";
-
-  const heading = document.createElement("h3");
-  heading.className = "skill-card__title";
-  heading.textContent = name;
-
-  const ul = document.createElement("ul");
-  ul.className = "skill-card__list";
-  tags.forEach((tag) => {
-    const li = document.createElement("li");
-    li.textContent = tag;
-    ul.appendChild(li);
-  });
-
-  card.append(heading, ul);
-  return card;
-}
-
-function renderSkills() {
-  const grid = document.getElementById("skills-grid");
-  if (!grid) return;
-
-  const available = projectSkillTags();
+// One row per category, widest first.
+//
+// The pyramid used to be a fixed shape (12/10/8/6/4) with the skills poured
+// into it, which made the rows arbitrary — a single row could span four
+// categories, so there was nothing coherent to label. Rows are categories now,
+// which means the silhouette is a consequence of the group sizes rather than
+// something chosen. That is the price of every group carrying a heading, and
+// sorting widest-first is what keeps it tapering.
+function skillsetGroups(tab) {
   const categories =
     typeof SKILL_CATEGORIES !== "undefined" ? SKILL_CATEGORIES : [];
-  const used = new Set();
 
-  categories.forEach((category) => {
-    // Only show tags a project actually carries, so the list stays derived.
-    const tags = category.tags.filter((tag) => available.includes(tag));
-    tags.forEach((tag) => used.add(tag));
-    if (tags.length) grid.appendChild(buildSkillCard(category.name, tags));
+  return categories
+    .filter(
+      (category) =>
+        (category.skills || []).length && (category.tab || "skills") === tab
+    )
+    .map((category, index) => ({ category, index }))
+    // Explicit index tie-break: equal-sized groups keep declaration order
+    // rather than depending on the engine's sort being stable.
+    .sort(
+      (a, b) =>
+        b.category.skills.length - a.category.skills.length || a.index - b.index
+    )
+    .map((entry) => entry.category);
+}
+
+function buildSkillsetGroup(category) {
+  const group = document.createElement("div");
+  group.className = "skillset__group";
+
+  // A group with no name renders headingless — the panel's own tab already
+  // labels it, so an unnamed single group needs nothing above it.
+  if (category.name) {
+    const heading = document.createElement("h3");
+    heading.className = "skillset__heading";
+    heading.textContent = category.name;
+    group.appendChild(heading);
+  }
+
+  const row = document.createElement("div");
+  row.className = "skillset__row";
+  category.skills.forEach((skill) => {
+    const tile = document.createElement("span");
+    tile.className = "skillset__tile";
+    tile.textContent = skill;
+    row.appendChild(tile);
   });
 
-  // Anything a new project introduced that hasn't been categorised yet.
-  const uncategorised = available.filter((tag) => !used.has(tag));
-  if (uncategorised.length) {
-    grid.appendChild(buildSkillCard("Other", uncategorised));
+  group.appendChild(row);
+  return group;
+}
+
+// Skills / Tools toggle, built as a real ARIA tablist: arrow keys move between
+// tabs, Home/End jump to the ends, and a roving tabindex keeps Tab itself
+// stepping past the whole control rather than through both buttons.
+function initSkillsetTabs() {
+  const tabs = Array.from(document.querySelectorAll(".skillset__tab"));
+  if (tabs.length < 2) return;
+
+  function select(tab, moveFocus) {
+    tabs.forEach((other) => {
+      const isTarget = other === tab;
+      other.classList.toggle("is-active", isTarget);
+      other.setAttribute("aria-selected", String(isTarget));
+      other.tabIndex = isTarget ? 0 : -1;
+
+      const panel = document.getElementById(other.getAttribute("aria-controls"));
+      if (panel) panel.hidden = !isTarget;
+    });
+    if (moveFocus) tab.focus();
   }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => select(tab, false));
+    tab.addEventListener("keydown", (event) => {
+      const last = tabs.length - 1;
+      let next = null;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+        next = tabs[index === last ? 0 : index + 1];
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+        next = tabs[index === 0 ? last : index - 1];
+      } else if (event.key === "Home") {
+        next = tabs[0];
+      } else if (event.key === "End") {
+        next = tabs[last];
+      }
+      if (!next) return;
+      event.preventDefault();
+      select(next, true);
+    });
+  });
+}
+
+function renderSkillset() {
+  [
+    ["skills", "skillset-panel-skills"],
+    ["tools", "skillset-panel-tools"],
+  ].forEach(([tab, panelId]) => {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    skillsetGroups(tab).forEach((category) => {
+      panel.appendChild(buildSkillsetGroup(category));
+    });
+  });
+
+  initSkillsetTabs();
 }
 
 /* --- Education & Experience timeline ------------------------------------ */
@@ -393,7 +438,7 @@ function setYear() {
 // — that section read the reference's cards as already in place between frames,
 // but the reference does scrub them on scroll.
 
-renderSkills();
+renderSkillset();
 renderTimeline();
 renderAchievements();
 initCardSpotlight();
