@@ -1,5 +1,6 @@
 // Floating pill nav: docks flush to the viewport top on scroll, collapses to a
-// hamburger below 768px, and marks the section currently in view as active.
+// hamburger below 768px, marks the section currently in view as active, and
+// slides an underline to sit beneath whichever link that is.
 
 (function () {
   const header = document.getElementById("site-header");
@@ -69,6 +70,66 @@
     else if (wide.addListener) wide.addListener(onWide);
   }
 
+  /* --- Sliding marker ---------------------------------------------------- */
+
+  // Follows whichever link carries .is-active. That class is set by the
+  // section observer below on the homepage and written into the markup on
+  // cv.html, so the marker works on both without knowing the difference.
+  const pill = header.querySelector(".nav-pill");
+  const marker = header.querySelector(".nav-pill__marker");
+  const wideNav = window.matchMedia("(min-width: 841px)");
+
+  function syncMarker() {
+    if (!marker || !pill || !menu) return;
+
+    const active = menu.querySelector("a.is-active");
+    // Below the collapsed breakpoint the links live in a dropdown that is shut
+    // most of the time, and CSS hides the marker there — measuring it would
+    // only produce a stale position for when the window widens again.
+    if (!active || !wideNav.matches) {
+      marker.classList.remove("is-visible");
+      return;
+    }
+
+    const pillRect = pill.getBoundingClientRect();
+    const rect = active.getBoundingClientRect();
+
+    // First placement must not animate in from the pill's left edge, so the
+    // transition is suppressed for exactly that one write.
+    const first = !marker.classList.contains("is-visible");
+    if (first) marker.style.transition = "none";
+
+    // getBoundingClientRect is a border-box measurement, but `left: 0` on an
+    // absolutely positioned child anchors to the padding box — so the pill's
+    // 1px border has to come back out or the marker sits a pixel right and low.
+    const insetX = pillRect.left + pill.clientLeft;
+    const insetY = pillRect.top + pill.clientTop;
+
+    marker.style.setProperty("--nav-marker-x", `${rect.left - insetX}px`);
+    marker.style.setProperty("--nav-marker-y", `${rect.bottom - insetY}px`);
+    marker.style.setProperty("--nav-marker-w", `${rect.width}px`);
+
+    if (first) {
+      void marker.offsetWidth; // flush the jump before the transition returns
+      marker.style.transition = "";
+      marker.classList.add("is-visible");
+    }
+  }
+
+  if (marker) {
+    window.addEventListener("resize", syncMarker, { passive: true });
+    if (wideNav.addEventListener) wideNav.addEventListener("change", syncMarker);
+    else if (wideNav.addListener) wideNav.addListener(syncMarker);
+
+    // Poppins is swapped in after first paint, and the fallback metrics are a
+    // different width — without this the marker sits under the old text box.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncMarker);
+    }
+
+    syncMarker();
+  }
+
   /* --- Active section ---------------------------------------------------- */
 
   const links = Array.from(menu ? menu.querySelectorAll("a[href^='#']") : []);
@@ -82,6 +143,7 @@
     links.forEach((link) => {
       link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
     });
+    syncMarker();
   };
 
   const visible = new Set();

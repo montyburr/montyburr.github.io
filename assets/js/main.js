@@ -311,22 +311,64 @@ function renderTimeline() {
   trackTimelineProgress(timeline, progress);
 }
 
-// The scroll-linked marker that slides down the timeline's centre line.
+// The scroll-linked marker that slides down the timeline's centre line, and the
+// nodes it lights as it passes them.
 function trackTimelineProgress(timeline, progress) {
+  const nodes = Array.from(timeline.querySelectorAll(".timeline__node"));
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     progress.style.transform = "scaleY(1)";
+    // The line is drawn in full here, so every node it would have passed is
+    // lit in full too — the resting dim state only makes sense while the
+    // marker is actually travelling.
+    nodes.forEach((node) => node.classList.add("is-lit"));
     return;
   }
 
   let ticking = false;
+  // Offsets of each node's centre from the top of the timeline. Independent of
+  // scroll position, so this only needs redoing when the layout reflows.
+  let marks = null;
+
+  // Deliberately offsetTop rather than getBoundingClientRect: the scroll
+  // hand-off translates .timeline__item as it crosses the viewport, and a rect
+  // would fold that shift into the measurement and cache it. Layout offsets
+  // ignore transforms. Each node is absolute inside its item, and each item is
+  // relative inside the timeline, so the two offsets chain cleanly.
+  function measure() {
+    marks = nodes.map((node) => {
+      const item = node.offsetParent;
+      const base = item && timeline.contains(item) ? item.offsetTop : 0;
+      return base + node.offsetTop + node.offsetHeight / 2;
+    });
+  }
+
+  // The tip tracks this fraction down the viewport, so the line fills to
+  // roughly where you are reading and the nodes light as it reaches them.
+  //
+  // It used to be paced across the whole entry-to-exit travel instead, which
+  // meant the tip fell steadily further behind the reading line and topped out
+  // around 0.95 at the foot of the page — the last node or two sat unlit above
+  // the viewport with the line permanently short of the end. Anchoring it to a
+  // screen position rather than a scroll fraction is what lets it finish.
+  const LEAD = 0.62;
 
   function update() {
     ticking = false;
     const rect = timeline.getBoundingClientRect();
-    const travel = rect.height + window.innerHeight;
-    const seen = window.innerHeight - rect.top;
-    const ratio = Math.max(0, Math.min(1, seen / travel));
+    // Distance from the top of the timeline down to the reading line, clamped
+    // to the timeline itself. This is the tip's position in timeline space.
+    const tip = Math.max(
+      0,
+      Math.min(rect.height, window.innerHeight * LEAD - rect.top)
+    );
+    const ratio = rect.height ? tip / rect.height : 0;
     progress.style.transform = `scaleY(${ratio.toFixed(4)})`;
+
+    if (!marks) measure();
+    nodes.forEach((node, index) => {
+      node.classList.toggle("is-lit", tip >= marks[index]);
+    });
   }
 
   window.addEventListener(
@@ -339,7 +381,24 @@ function trackTimelineProgress(timeline, progress) {
     { passive: true }
   );
 
-  window.addEventListener("resize", update, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      marks = null;
+      update();
+    },
+    { passive: true }
+  );
+
+  // Poppins swaps in after first paint and the fallback's metrics are not the
+  // same, so every card changes height and the marks taken at load go stale.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      marks = null;
+      update();
+    });
+  }
+
   update();
 }
 

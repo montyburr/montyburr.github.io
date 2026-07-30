@@ -223,6 +223,54 @@ h3 {
 }
 
 /* --------------------------------------------------------------------------
+   Reading progress — hairline across the very top of the page
+   -------------------------------------------------------------------------- */
+
+/* Scroll-driven, so it needs no JS and no scroll listener. The @supports guard
+   leaves the bar at scaleX(0) — invisible — on engines without scroll
+   timelines, which is the right thing for a decorative bar to fail to. Nested
+   inside the same no-preference query as the hand-off block for the same
+   reason given there: the reduced-motion rules force a 0.01ms duration, and on
+   a progress timeline that parks the bar permanently full rather than off. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60; /* above the nav pill, which sits at 50 */
+  height: 2px;
+  pointer-events: none;
+}
+
+.scroll-progress__bar {
+  display: block;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--c-gold-rgb) / 0.35),
+    var(--c-gold)
+  );
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress__bar {
+      animation: scroll-progress linear none;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
    Header — floating pill nav that docks flush on scroll
    -------------------------------------------------------------------------- */
 
@@ -244,6 +292,10 @@ h3 {
 
 .nav-pill {
   pointer-events: auto;
+  /* Positioned so the sliding marker below has something to measure against.
+     The collapsed breakpoint sets this too; hoisting it here makes the marker
+     work at every width without depending on that rule. */
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-lg);
@@ -298,6 +350,31 @@ h3 {
 .nav-pill__links a:hover,
 .nav-pill__links a.is-active {
   color: var(--c-gold);
+}
+
+/* Underline that slides between links as the active section changes. It is a
+   sibling of the list rather than a child because a <ul> may only contain
+   <li>; nav.js measures the active link against the pill and writes the three
+   custom properties below. Width is transitioned alongside the transform —
+   less compositor-friendly than a scaleX, but it keeps the 2px cap radius from
+   being squashed, and there is exactly one of these on the page. */
+.nav-pill__marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--nav-marker-w, 0px);
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--c-gold);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(var(--nav-marker-x, 0px), var(--nav-marker-y, 0px));
+  transition: transform var(--dur-mid) var(--ease-out),
+    width var(--dur-mid) var(--ease-out), opacity var(--dur-fast) ease;
+}
+
+.nav-pill__marker.is-visible {
+  opacity: 1;
 }
 
 /* Hamburger — hidden until the pill collapses */
@@ -397,6 +474,35 @@ h3 {
     radial-gradient(90% 70% at 50% 50%, transparent 45%, var(--c-bg) 100%);
 }
 
+/* Gold wash that follows the cursor, sitting above the veil but below the copy.
+   --mx/--my come from hero.js — the same custom properties .card-spotlight
+   uses, so there is one convention for "where the pointer is". */
+.hero__spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-slow) ease;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--c-gold-rgb) / 0.13),
+    transparent 70%
+  );
+}
+
+.hero.is-pointing .hero__spotlight {
+  opacity: 1;
+}
+
+/* No hovering pointer means no meaningful position — a glow parked wherever
+   the last tap landed reads as a rendering bug. */
+@media (hover: none), (pointer: coarse) {
+  .hero__spotlight {
+    display: none;
+  }
+}
+
 .hero__inner {
   position: relative;
   display: flex;
@@ -426,14 +532,52 @@ h3 {
 }
 
 .hero__tagline {
-  /* Reserve two lines so the typewriter doesn't reflow the CTAs as it types. */
+  /* Reserve two lines so switching phrase doesn't reflow the CTAs below. */
   min-height: calc(var(--fs-tagline) * var(--lh-snug) * 2);
+  /* Load-bearing. .hero__inner is a centred flex column, so this paragraph is
+     shrink-to-fit — and the rolling tagline takes both of its lines out of flow,
+     leaving no in-flow content to derive a width from. Without this it collapses
+     to zero width and the text wraps one character per line. */
+  width: 100%;
   margin: 0 0 var(--space-xl);
   max-width: 30ch;
   color: var(--c-gold);
   font-family: var(--font-display);
   font-size: var(--fs-tagline);
   line-height: var(--lh-snug);
+}
+
+/* Clipping window for the rolling tagline. Height is pinned to the same two
+   lines .hero__tagline already reserves, so switching phrase can never move the
+   CTAs below it. hero.js keeps every phrase short enough to fit. */
+.hero__type--roll {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  height: calc(var(--fs-tagline) * var(--lh-snug) * 2);
+}
+
+/* Both lines are absolute during a roll so neither contributes to height.
+   Centred vertically on purpose: the window is two lines tall but most phrases
+   are one, so top-aligned text sat at the very top of its box and had to travel
+   the full window height — leaving the window visibly empty mid-transition. */
+.hero__type--roll .hero__line {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero__type--roll .hero__line.is-moving {
+  transition: transform 620ms var(--ease-out), opacity 620ms ease;
+}
+
+/* The author display below outranks the UA stylesheet's [hidden]{display:none},
+   so the attribute alone never actually hid this. It shows as a stray bar under
+   the tagline whenever the caret isn't in use — including with JS disabled. */
+.hero__caret[hidden] {
+  display: none;
 }
 
 .hero__caret {
@@ -967,6 +1111,9 @@ main > section:not(.hero) {
   margin-left: auto;
 }
 
+/* Nodes rest small and dim, then come up to full size as the progress marker
+   above reaches them — so the line doesn't just grow, it lights the entries on
+   its way past. main.js owns the is-lit class. */
 .timeline__node {
   position: absolute;
   top: 1.9rem;
@@ -975,6 +1122,15 @@ main > section:not(.hero) {
   border-radius: 50%;
   background: var(--c-gold);
   box-shadow: 0 0 0 4px rgb(var(--c-gold-rgb) / 0.16);
+  opacity: 0.45;
+  transform: scale(0.7);
+  transition: transform var(--dur-slow) var(--ease-out),
+    opacity var(--dur-mid) ease;
+}
+
+.timeline__node.is-lit {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* Education reads as a solid cream node, experience as a hollow gold ring, so
@@ -1673,7 +1829,6 @@ main > section.project-detail {
   }
 
   .nav-pill {
-    position: relative;
     gap: var(--space-sm);
     justify-content: space-between;
     width: 100%;
@@ -1682,6 +1837,13 @@ main > section.project-detail {
 
   .nav-pill__toggle {
     display: flex;
+  }
+
+  /* The links become a dropdown that is closed most of the time, so a marker
+     tracking them would spend its life floating in empty space below the pill.
+     The active link is already gold in the open menu, which is enough. */
+  .nav-pill__marker {
+    display: none;
   }
 
   .nav-pill__links {
@@ -1767,5 +1929,9 @@ main > section.project-detail {
 
   .hero__tagline {
     min-height: 0;
+  }
+
+  .hero__spotlight {
+    display: none;
   }
 }
