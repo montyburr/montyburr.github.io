@@ -22,7 +22,11 @@
     const heading = document.createElement("h1");
     heading.textContent = project.title;
 
-    const media = buildMedia(project.media);
+    const gallery = project.gallery?.length
+      ? project.gallery
+      : [{ src: project.media.src, alt: project.media.alt, title: project.title }];
+    const media =
+      project.media.type === "video" ? buildMedia(project.media) : buildCarousel(gallery);
     media.classList.add("project-detail__media");
 
     const body = document.createElement("div");

@@ -6,6 +6,10 @@
 // Skillset section (assets/js/skills-data.js), rather than repeated per card.
 // `details` (array of paragraph strings) powers each project's own page at
 // project.html?id=<id> — linked automatically from its card.
+// `gallery` (optional, array of { src, alt, title }) drives the titled image
+// carousel on the project's own page. Falls back to a single-slide gallery
+// built from `media` when omitted. Use the placeholder SVG for slots that
+// don't have a real screenshot yet.
 
 const PROJECTS = [
   {
@@ -20,6 +24,11 @@ const PROJECTS = [
       src: "assets/img/placeholder/project-placeholder.svg",
       alt: "Screenshot placeholder — AI Project Kickoff Assistant",
     },
+    gallery: [
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 1" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 2" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 3" },
+    ],
     links: { github: null, demo: null },
     details: [
       "A tool that takes a project idea entered in plain language and carries it through the opening stages of delivery in one pass: it raises a Jira ticket for the idea, writes a set of specifications from that ticket, and then produces a prototype based on those specs.",
@@ -39,6 +48,11 @@ const PROJECTS = [
       src: "assets/img/screenshots/ticket-triage.png",
       alt: "IT Support Ticket Triage Dashboard — ticket list with AI Copilot panel showing category, priority, and suggested action",
     },
+    gallery: [
+      { src: "assets/img/screenshots/ticket-triage.png", alt: "IT Support Ticket Triage Dashboard — ticket list with AI Copilot panel showing category, priority, and suggested action", title: "Overview" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — IT Support Ticket Triage Dashboard", title: "Preview 2" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — IT Support Ticket Triage Dashboard", title: "Preview 3" },
+    ],
     links: { github: "#", demo: null },
     details: [
       "This dashboard helps IT support teams cut through a backlog of incoming tickets by automatically suggesting a category, priority, and first action for each one, using an AI Copilot panel alongside the ticket view.",
@@ -57,6 +71,11 @@ const PROJECTS = [
       src: "assets/img/placeholder/project-placeholder.svg",
       alt: "Screenshot placeholder — Income Inequality Insight Platform",
     },
+    gallery: [
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — Income Inequality Insight Platform", title: "Preview 1" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — Income Inequality Insight Platform", title: "Preview 2" },
+      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — Income Inequality Insight Platform", title: "Preview 3" },
+    ],
     links: { github: "#", demo: null },
     details: [
       "A team project exploring global income inequality through an interactive world map, letting users click into a country and see how its inequality metrics compare over time.",
