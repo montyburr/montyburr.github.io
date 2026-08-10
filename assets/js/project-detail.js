@@ -3,6 +3,54 @@
     return new URLSearchParams(window.location.search).get("id");
   }
 
+  // Animated stage diagram, e.g. Idea -> Jira Ticket -> Approval -> ... The
+  // "live" motion is pure CSS (each dot's pulse keyframe staggered by --i via
+  // animation-delay), not real pipeline state — see .project-detail__pipeline
+  // in style.css for the timing.
+  function buildPipeline(stages) {
+    const wrap = document.createElement("div");
+    wrap.className = "project-detail__pipeline";
+
+    const heading = document.createElement("h3");
+    heading.textContent = "Pipeline";
+    wrap.appendChild(heading);
+
+    const track = document.createElement("div");
+    track.className = "project-detail__pipeline-track";
+
+    const list = document.createElement("ol");
+    list.className = "project-detail__pipeline-steps";
+
+    stages.forEach((stage, index) => {
+      if (index > 0) {
+        const arrow = document.createElement("li");
+        arrow.className = "project-detail__pipeline-arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "→";
+        list.appendChild(arrow);
+      }
+
+      const step = document.createElement("li");
+      step.className = "project-detail__pipeline-step";
+      step.style.setProperty("--i", index);
+
+      const dot = document.createElement("span");
+      dot.className = "project-detail__pipeline-dot";
+      dot.setAttribute("aria-hidden", "true");
+
+      const label = document.createElement("span");
+      label.className = "project-detail__pipeline-label";
+      label.textContent = stage;
+
+      step.append(dot, label);
+      list.appendChild(step);
+    });
+
+    track.appendChild(list);
+    wrap.appendChild(track);
+    return wrap;
+  }
+
   function renderNotFound(container) {
     const heading = document.createElement("h1");
     heading.textContent = "Project not found";
@@ -22,7 +70,15 @@
     const heading = document.createElement("h1");
     heading.textContent = project.title;
 
-    const media = buildMedia(project.media);
+    const tags = project.tools?.length ? buildTags(project.tools) : null;
+
+    const pipeline = project.pipeline?.length ? buildPipeline(project.pipeline) : null;
+
+    const gallery = project.gallery?.length
+      ? project.gallery
+      : [{ src: project.media.src, alt: project.media.alt, title: project.title }];
+    const media =
+      project.media.type === "video" ? buildMedia(project.media) : buildCarousel(gallery);
     media.classList.add("project-detail__media");
 
     const body = document.createElement("div");
@@ -34,13 +90,43 @@
       body.appendChild(p);
     });
 
-    const links = document.createElement("div");
-    links.className = "project-card__links project-detail__links";
-    if (project.links?.github) links.appendChild(makeLink(project.links.github, "GitHub"));
-    if (project.links?.demo) links.appendChild(makeLink(project.links.demo, "Live Demo"));
-    if (project.writeup) links.appendChild(makeLink(project.writeup, "Read Write-up"));
+    let features = null;
+    if (project.features?.length) {
+      features = document.createElement("div");
+      features.className = "project-detail__features";
 
-    container.append(heading, media, body, links);
+      const featuresHeading = document.createElement("h3");
+      featuresHeading.textContent = "Key features";
+      features.appendChild(featuresHeading);
+
+      const list = document.createElement("ul");
+      project.features.forEach((feature) => {
+        const item = document.createElement("li");
+        item.textContent = feature;
+        list.appendChild(item);
+      });
+      features.appendChild(list);
+    }
+
+    // No GitHub/live-demo buttons — only a write-up link, for non-code entries.
+    const links = project.writeup
+      ? (() => {
+          const wrap = document.createElement("div");
+          wrap.className = "project-card__links project-detail__links";
+          wrap.appendChild(makeLink(project.writeup, "Read Write-up"));
+          return wrap;
+        })()
+      : null;
+
+    container.append(
+      heading,
+      ...(tags ? [tags] : []),
+      media,
+      body,
+      ...(pipeline ? [pipeline] : []),
+      ...(features ? [features] : []),
+      ...(links ? [links] : [])
+    );
   }
 
   function init() {

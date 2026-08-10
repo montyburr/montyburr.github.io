@@ -24,6 +24,20 @@ function buildMedia(media) {
   return wrap;
 }
 
+function buildTags(tags) {
+  const wrap = document.createElement("div");
+  wrap.className = "project-tags";
+
+  tags.forEach((tag) => {
+    const item = document.createElement("span");
+    item.className = "project-tags__item";
+    item.textContent = tag;
+    wrap.appendChild(item);
+  });
+
+  return wrap;
+}
+
 function makeLink(href, label) {
   const a = document.createElement("a");
   a.href = href;
@@ -32,117 +46,6 @@ function makeLink(href, label) {
   a.target = "_blank";
   a.rel = "noopener";
   return a;
-}
-
-/* --- Skillset ----------------------------------------------------------- */
-
-// One row per category, widest first.
-//
-// The pyramid used to be a fixed shape (12/10/8/6/4) with the skills poured
-// into it, which made the rows arbitrary — a single row could span four
-// categories, so there was nothing coherent to label. Rows are categories now,
-// which means the silhouette is a consequence of the group sizes rather than
-// something chosen. That is the price of every group carrying a heading, and
-// sorting widest-first is what keeps it tapering.
-function skillsetGroups(tab) {
-  const categories =
-    typeof SKILL_CATEGORIES !== "undefined" ? SKILL_CATEGORIES : [];
-
-  return categories
-    .filter(
-      (category) =>
-        (category.skills || []).length && (category.tab || "skills") === tab
-    )
-    .map((category, index) => ({ category, index }))
-    // Explicit index tie-break: equal-sized groups keep declaration order
-    // rather than depending on the engine's sort being stable.
-    .sort(
-      (a, b) =>
-        b.category.skills.length - a.category.skills.length || a.index - b.index
-    )
-    .map((entry) => entry.category);
-}
-
-function buildSkillsetGroup(category) {
-  const group = document.createElement("div");
-  group.className = "skillset__group";
-
-  // A group with no name renders headingless — the panel's own tab already
-  // labels it, so an unnamed single group needs nothing above it.
-  if (category.name) {
-    const heading = document.createElement("h3");
-    heading.className = "skillset__heading";
-    heading.textContent = category.name;
-    group.appendChild(heading);
-  }
-
-  const row = document.createElement("div");
-  row.className = "skillset__row";
-  category.skills.forEach((skill) => {
-    const tile = document.createElement("span");
-    tile.className = "skillset__tile";
-    tile.textContent = skill;
-    row.appendChild(tile);
-  });
-
-  group.appendChild(row);
-  return group;
-}
-
-// Skills / Tools toggle, built as a real ARIA tablist: arrow keys move between
-// tabs, Home/End jump to the ends, and a roving tabindex keeps Tab itself
-// stepping past the whole control rather than through both buttons.
-function initSkillsetTabs() {
-  const tabs = Array.from(document.querySelectorAll(".skillset__tab"));
-  if (tabs.length < 2) return;
-
-  function select(tab, moveFocus) {
-    tabs.forEach((other) => {
-      const isTarget = other === tab;
-      other.classList.toggle("is-active", isTarget);
-      other.setAttribute("aria-selected", String(isTarget));
-      other.tabIndex = isTarget ? 0 : -1;
-
-      const panel = document.getElementById(other.getAttribute("aria-controls"));
-      if (panel) panel.hidden = !isTarget;
-    });
-    if (moveFocus) tab.focus();
-  }
-
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => select(tab, false));
-    tab.addEventListener("keydown", (event) => {
-      const last = tabs.length - 1;
-      let next = null;
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-        next = tabs[index === last ? 0 : index + 1];
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-        next = tabs[index === 0 ? last : index - 1];
-      } else if (event.key === "Home") {
-        next = tabs[0];
-      } else if (event.key === "End") {
-        next = tabs[last];
-      }
-      if (!next) return;
-      event.preventDefault();
-      select(next, true);
-    });
-  });
-}
-
-function renderSkillset() {
-  [
-    ["skills", "skillset-panel-skills"],
-    ["tools", "skillset-panel-tools"],
-  ].forEach(([tab, panelId]) => {
-    const panel = document.getElementById(panelId);
-    if (!panel) return;
-    skillsetGroups(tab).forEach((category) => {
-      panel.appendChild(buildSkillsetGroup(category));
-    });
-  });
-
-  initSkillsetTabs();
 }
 
 /* --- Education & Experience timeline ------------------------------------ */
@@ -311,22 +214,64 @@ function renderTimeline() {
   trackTimelineProgress(timeline, progress);
 }
 
-// The scroll-linked marker that slides down the timeline's centre line.
+// The scroll-linked marker that slides down the timeline's centre line, and the
+// nodes it lights as it passes them.
 function trackTimelineProgress(timeline, progress) {
+  const nodes = Array.from(timeline.querySelectorAll(".timeline__node"));
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     progress.style.transform = "scaleY(1)";
+    // The line is drawn in full here, so every node it would have passed is
+    // lit in full too — the resting dim state only makes sense while the
+    // marker is actually travelling.
+    nodes.forEach((node) => node.classList.add("is-lit"));
     return;
   }
 
   let ticking = false;
+  // Offsets of each node's centre from the top of the timeline. Independent of
+  // scroll position, so this only needs redoing when the layout reflows.
+  let marks = null;
+
+  // Deliberately offsetTop rather than getBoundingClientRect: the scroll
+  // hand-off translates .timeline__item as it crosses the viewport, and a rect
+  // would fold that shift into the measurement and cache it. Layout offsets
+  // ignore transforms. Each node is absolute inside its item, and each item is
+  // relative inside the timeline, so the two offsets chain cleanly.
+  function measure() {
+    marks = nodes.map((node) => {
+      const item = node.offsetParent;
+      const base = item && timeline.contains(item) ? item.offsetTop : 0;
+      return base + node.offsetTop + node.offsetHeight / 2;
+    });
+  }
+
+  // The tip tracks this fraction down the viewport, so the line fills to
+  // roughly where you are reading and the nodes light as it reaches them.
+  //
+  // It used to be paced across the whole entry-to-exit travel instead, which
+  // meant the tip fell steadily further behind the reading line and topped out
+  // around 0.95 at the foot of the page — the last node or two sat unlit above
+  // the viewport with the line permanently short of the end. Anchoring it to a
+  // screen position rather than a scroll fraction is what lets it finish.
+  const LEAD = 0.62;
 
   function update() {
     ticking = false;
     const rect = timeline.getBoundingClientRect();
-    const travel = rect.height + window.innerHeight;
-    const seen = window.innerHeight - rect.top;
-    const ratio = Math.max(0, Math.min(1, seen / travel));
+    // Distance from the top of the timeline down to the reading line, clamped
+    // to the timeline itself. This is the tip's position in timeline space.
+    const tip = Math.max(
+      0,
+      Math.min(rect.height, window.innerHeight * LEAD - rect.top)
+    );
+    const ratio = rect.height ? tip / rect.height : 0;
     progress.style.transform = `scaleY(${ratio.toFixed(4)})`;
+
+    if (!marks) measure();
+    nodes.forEach((node, index) => {
+      node.classList.toggle("is-lit", tip >= marks[index]);
+    });
   }
 
   window.addEventListener(
@@ -339,7 +284,24 @@ function trackTimelineProgress(timeline, progress) {
     { passive: true }
   );
 
-  window.addEventListener("resize", update, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      marks = null;
+      update();
+    },
+    { passive: true }
+  );
+
+  // Poppins swaps in after first paint and the fallback's metrics are not the
+  // same, so every card changes height and the marks taken at load go stale.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      marks = null;
+      update();
+    });
+  }
+
   update();
 }
 
@@ -438,7 +400,7 @@ function setYear() {
 // — that section read the reference's cards as already in place between frames,
 // but the reference does scrub them on scroll.
 
-renderSkillset();
+initSkillsetMarquee();
 renderTimeline();
 renderAchievements();
 initCardSpotlight();
