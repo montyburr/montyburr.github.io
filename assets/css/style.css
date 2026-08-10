@@ -1584,6 +1584,118 @@ main > section.project-detail {
   margin: 0 0 var(--space-sm);
 }
 
+/* Tag row — the tools/skills used, cross-referenced against SKILL_CATEGORIES
+   (assets/js/skills-data.js) so a tag reads as "this also appears in the
+   Skillset marquee", not an arbitrary label. */
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-lg);
+}
+
+.project-tags__item {
+  padding: var(--space-3xs) var(--space-sm);
+  border: var(--border-hairline) solid var(--c-border);
+  border-radius: var(--radius-pill);
+  background: var(--c-bg-elevated);
+  color: var(--c-text-muted);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Animated pipeline step diagram — project-kickoff's stage-gated flow.
+   The motion is pure CSS: each dot runs the same pulse keyframe on one
+   shared-length loop, offset by --i (set inline per step in
+   project-detail.js), so the highlight appears to travel step to step and
+   loops seamlessly. Steps wrap onto multiple lines rather than scrolling
+   horizontally, so every stage stays visible without a scroll affordance a
+   reader has to discover first. */
+.project-detail__pipeline {
+  margin-bottom: var(--space-lg);
+}
+
+.project-detail__pipeline h3 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  color: var(--c-gold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.project-detail__pipeline-track {
+  padding-block: var(--space-2xs);
+}
+
+/* Wraps rather than scrolling horizontally — an off-screen step a reader has
+   to know to scroll for isn't really part of a "visible" diagram. */
+.project-detail__pipeline-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  row-gap: var(--space-sm);
+  column-gap: var(--space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-detail__pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3xs);
+  flex-shrink: 0;
+  width: 84px;
+  text-align: center;
+}
+
+.project-detail__pipeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--c-border-strong);
+  box-shadow: 0 0 0 0 rgb(var(--c-gold-rgb) / 0);
+  animation: pipeline-pulse 7.2s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.9s);
+}
+
+.project-detail__pipeline-label {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  color: var(--c-text-muted);
+  line-height: var(--lh-snug);
+}
+
+.project-detail__pipeline-arrow {
+  flex-shrink: 0;
+  align-self: center;
+  margin-top: 5px;
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+
+@keyframes pipeline-pulse {
+  0%,
+  88%,
+  100% {
+    background: var(--c-border-strong);
+    box-shadow: 0 0 0 0 rgb(var(--c-gold-rgb) / 0);
+  }
+  6% {
+    background: var(--c-gold);
+    box-shadow: 0 0 0 5px rgb(var(--c-gold-rgb) / 0.18);
+  }
+  14% {
+    background: var(--c-border-strong);
+    box-shadow: 0 0 0 0 rgb(var(--c-gold-rgb) / 0);
+  }
+}
+
 .project-detail__media {
   margin-bottom: var(--space-lg);
 }
@@ -1821,6 +1933,46 @@ main > section.project-detail {
   gap: var(--space-sm);
   color: var(--c-text-muted);
   margin-bottom: var(--space-lg);
+}
+
+.project-detail__features {
+  margin-bottom: var(--space-lg);
+}
+
+.project-detail__features h3 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  color: var(--c-gold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.project-detail__features ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-detail__features li {
+  position: relative;
+  padding-left: var(--space-md);
+  color: var(--c-text-muted);
+}
+
+.project-detail__features li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-gold);
 }
 
 .project-detail__links {

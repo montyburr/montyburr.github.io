@@ -75,7 +75,7 @@ const SKILL_CATEGORIES = [
   {
     tab: "skills",
     name: "Backend & APIs",
-    skills: ["FastAPI", "Flask"],
+    skills: ["FastAPI", "Flask", "API Integration"],
   },
 
   /* --- Tools ------------------------------------------------------------ */

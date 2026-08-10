@@ -24,6 +24,20 @@ function buildMedia(media) {
   return wrap;
 }
 
+function buildTags(tags) {
+  const wrap = document.createElement("div");
+  wrap.className = "project-tags";
+
+  tags.forEach((tag) => {
+    const item = document.createElement("span");
+    item.className = "project-tags__item";
+    item.textContent = tag;
+    wrap.appendChild(item);
+  });
+
+  return wrap;
+}
+
 function makeLink(href, label) {
   const a = document.createElement("a");
   a.href = href;
