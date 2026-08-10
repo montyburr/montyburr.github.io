@@ -737,19 +737,20 @@ main > section:not(.hero) {
 .about__panel {
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 3;
-  border: var(--border-hairline) solid var(--c-border);
-  border-radius: var(--radius-card);
-  background:
-    radial-gradient(70% 60% at 50% 40%, rgb(var(--c-gold-rgb) / 0.08), transparent 70%),
-    var(--c-bg-elevated);
 }
 
-.about__glyph {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 600;
-  color: var(--c-gold);
+.about__avatar {
+  width: clamp(180px, 20vw, 260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  outline: 4px solid var(--c-gold);
+  outline-offset: 6px;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.about__avatar:hover {
+  transform: scale(1.08);
 }
 
 /* --------------------------------------------------------------------------
@@ -2152,7 +2153,6 @@ main > section.project-detail {
   }
 
   .about__panel {
-    aspect-ratio: 16 / 9;
     order: -1;
   }
 
