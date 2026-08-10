@@ -78,9 +78,6 @@
   --fs-body: 1.0625rem;
   --fs-small: 0.9375rem;
   --fs-eyebrow: 0.8125rem;
-  /* Skillset tile labels. Sized against --tile-size so the longest word with
-     no natural break point still sits on one line; any larger and it breaks
-     mid-word wherever hyphenation dictionaries aren't available. */
   --fs-micro: 0.75rem;
 
   --lh-tight: 1.1;
@@ -103,13 +100,6 @@
 
   --container-width: 1140px;
   --gutter: 1.5rem;
-
-  /* Sized for legibility, not density — the widest row is 8 tiles. Bumped from
-     110px when the labels went semibold: weight 600 renders wider than 400, and
-     "Communication" (the widest label with no natural break point) needs the
-     extra room to stay on one line. */
-  --tile-size: 120px;
-  --tile-gap: 8px;
 
   /* Shape */
   --radius-card: 14px;
@@ -763,83 +753,32 @@ main > section:not(.hero) {
 }
 
 /* --------------------------------------------------------------------------
-   Skillset — one headed row per category, widest first
+   Skillset — two-line scrolling logo marquee, opposite directions
 
-   The rows were a fixed 12/10/8/6/4 with the skills poured in, which made the
-   shape exact but the rows meaningless — a row could span four categories, so
-   there was nothing to label. A row is a category now. That hands the
-   silhouette over to the group sizes: it steps down in plateaus rather than
-   tapering evenly, which is the cost of every group being labelled.
-
-   The widest row is 7 tiles, so this fits the normal container and no longer
-   needs its own wider one. Rows wrap within their group on narrow screens, so
-   the headings survive every width without a layout swap.
+   skillset-marquee.js splits every skill in SKILL_CATEGORIES by its `tab`
+   into a Skills row and a Tools row (same split the old tab toggle used),
+   then clones enough leading items onto each row's own end so its
+   translateX loop has no visible seam. A skill with no entry in
+   SKILL_LOGO_SLUGS renders as a text-only tile instead of logo + label —
+   soft skills and abstract concepts stay in the marquee, just without a
+   logo. Loop distance and duration read a --marquee-elements custom
+   property that JS scopes to each .marquee element, so the two
+   differently-sized rows loop correctly without sharing one global value.
    -------------------------------------------------------------------------- */
 
-/* Skills / Tools toggle — same pill vocabulary as the nav. */
-.skillset__tabs {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-3xs);
-  width: max-content;
-  margin: 0 auto var(--space-xl);
-  padding: var(--space-3xs);
-  border: var(--border-hairline) solid var(--c-border);
-  border-radius: var(--radius-pill);
-  background: var(--c-bg-elevated);
-}
-
-.skillset__tab {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  padding: var(--space-2xs) var(--space-md);
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--c-text-muted);
-  font-family: inherit;
-  font-size: var(--fs-eyebrow);
-  font-weight: 500;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color var(--dur-fast) ease, background-color var(--dur-fast) ease;
-}
-
-.skillset__tab:hover {
-  color: var(--c-display);
-}
-
-.skillset__tab.is-active {
-  background: var(--c-gold);
-  color: var(--c-on-gold);
-}
-
-.skillset__tab-icon {
-  flex: none;
-}
-
-.skillset__grid {
+.skillset__marquee-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(var(--space-md), 3vw, var(--space-lg));
-}
-
-/* The display above would otherwise beat [hidden] and show both panels. */
-.skillset__grid[hidden] {
-  display: none;
+  gap: var(--space-xl);
 }
 
 .skillset__group {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--space-sm);
 }
 
-.skillset__heading {
+.skillset__row-label {
   margin: 0;
   font-family: var(--font-sans);
   font-size: var(--fs-eyebrow);
@@ -850,49 +789,132 @@ main > section:not(.hero) {
   text-align: center;
 }
 
-.skillset__row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--tile-gap);
+.marquee {
+  --marquee-width: 100%;
+  --marquee-height: 104px;
+  --marquee-elements-displayed: 6;
+  --marquee-element-width: calc(var(--marquee-width) / var(--marquee-elements-displayed));
+  --marquee-animation-duration: calc(var(--marquee-elements, 8) * 2.6s);
+
+  position: relative;
+  width: var(--marquee-width);
+  height: var(--marquee-height);
+  overflow: hidden;
 }
 
-.skillset__tile {
-  display: grid;
-  /* minmax(0, 1fr), not `place-items: center` — a centred grid item is sized to
-     max-content, so a long label would sit wider than the tile and spill past
-     the border before overflow-wrap ever applied. Pinning the column to the
-     track width is what lets the label break. */
-  grid-template-columns: minmax(0, 1fr);
-  align-content: center;
-  width: var(--tile-size);
-  min-height: var(--tile-size);
-  padding: var(--space-2xs) var(--space-3xs);
-  /* Belt and braces for a label longer than any tile: hyphenate first, and
-     break mid-word only if that fails, so nothing can spill past the border. */
-  hyphens: auto;
-  overflow-wrap: break-word;
-  border: var(--border-hairline) solid var(--c-border);
-  border-radius: var(--radius-card);
-  background: var(--c-bg-elevated);
-  color: var(--c-text);
+.marquee::before,
+.marquee::after {
+  position: absolute;
+  top: 0;
+  width: 8rem;
+  height: 100%;
+  content: "";
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee::before {
+  left: 0;
+  background: linear-gradient(to right, var(--c-bg) 0%, transparent 100%);
+}
+
+.marquee::after {
+  right: 0;
+  background: linear-gradient(to left, var(--c-bg) 0%, transparent 100%);
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: skillset-marquee-scroll var(--marquee-animation-duration) linear infinite;
+}
+
+.marquee.reverse .marquee-content {
+  animation-name: skillset-marquee-scroll-reverse;
+}
+
+@keyframes skillset-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--marquee-element-width) * var(--marquee-elements, 0)));
+  }
+}
+
+@keyframes skillset-marquee-scroll-reverse {
+  from {
+    transform: translateX(calc(-1 * var(--marquee-element-width) * var(--marquee-elements, 0)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-content li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: var(--space-2xs);
+  width: var(--marquee-element-width);
+  height: 100%;
+  padding-inline: var(--space-sm);
+}
+
+/* Covers both an <img> (Simple Icons CDN, colour baked into the request)
+   and an inline <svg> (icons with no baked-in fill, coloured via
+   `color` like the rest of the site's inline icons) so both logo sources
+   share the same size/opacity/hover treatment. */
+.marquee-content li .marquee-content__logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  color: var(--c-text-muted);
+  opacity: 0.8;
+  transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.marquee-content li:hover .marquee-content__logo {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.marquee-content li span {
   font-size: var(--fs-micro);
-  /* 600 is the heaviest self-hosted Poppins weight — going bolder would make
-     the browser synthesise it, which smears at this size. */
   font-weight: 600;
-  line-height: var(--lh-snug);
+  color: var(--c-text-muted);
   letter-spacing: 0.01em;
   text-align: center;
-  text-wrap: balance;
-  transition: color var(--dur-mid) ease, border-color var(--dur-mid) ease,
-    background-color var(--dur-mid) ease, transform var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
 }
 
-.skillset__tile:hover {
-  color: var(--c-display);
-  border-color: rgb(var(--c-gold-rgb) / 0.5);
-  background: rgb(var(--c-gold-rgb) / 0.07);
-  transform: translateY(-2px);
+/* Skills with no logo in SKILL_LOGO_SLUGS — e.g. Threat Intelligence,
+   Teamwork — render as a title only, sized up since it's the sole content
+   of the tile, and allowed to wrap where the fixed column is narrower than
+   the label. */
+.marquee-content li.marquee-content__item--text span {
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  line-height: var(--lh-snug);
+  white-space: normal;
+  text-wrap: balance;
+}
+
+@media (max-width: 768px) {
+  .marquee {
+    --marquee-elements-displayed: 3;
+  }
+
+  .marquee::before,
+  .marquee::after {
+    width: 4rem;
+  }
 }
 
 

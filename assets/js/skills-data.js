@@ -1,13 +1,15 @@
-// The Skillset section.
+// Full skill inventory — this list is authoritative — edit it directly to
+// add or remove an entry.
 //
-// This list is authoritative — edit it directly to add or remove an entry.
+// The Skillset section itself is now the logo marquee (see
+// assets/js/skillset-marquee-data.js), which only lists skills with a real
+// brand logo. This file's sole remaining consumer is the hero's rotating
+// tagline, which types one line per technical group.
 //
-// `tab` puts a group behind either the Skills or the Tools toggle. Within a
-// tab, groups render one per row sorted widest first, so the sizes below are
-// what produce the tapering shape — see renderSkillset in main.js.
+// `tab` is a leftover from the old pyramid layout and no longer read by
+// anything; left in place as light context rather than stripped out.
 //
-// `technical: false` keeps a group out of the hero's rotating tagline, which
-// types one line per technical group.
+// `technical: false` keeps a group out of the hero's rotating tagline.
 
 const SKILL_CATEGORIES = [
   /* --- Skills ----------------------------------------------------------- */
@@ -86,7 +88,6 @@ const SKILL_CATEGORIES = [
       "Git",
       "GitHub",
       "Docker",
-      "AWS",
       "VS Code",
       "PyCharm",
       "IntelliJ IDEA",
