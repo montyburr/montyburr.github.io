@@ -1,8 +1,12 @@
 // Edit this list to add, remove, or update project cards.
 // media.type: "image" -> renders an <img>. "video" -> renders a <video> (add media.poster too).
-// No GitHub/live-demo links — code isn't public and there's nothing to demo
-// live yet. `writeup` still shows a "Read write-up" link instead, for
-// non-code entries.
+// No GitHub links yet — code isn't public for any project.
+// `demo` (optional, URL) renders a "View Live Demo" button on the project's
+// own page. Every project shows the Live Demo slot regardless — omitting
+// `demo` just renders it as a disabled "Coming Soon" placeholder instead of
+// a real link. Set it once a project is actually deployed somewhere — none
+// of the ones below are yet. `writeup` renders a "Read Write-up" link
+// alongside it, for non-code entries.
 // `details` (array of paragraph strings) and `features` (array of bullet
 // strings, optional) power each project's own page at project.html?id=<id>
 // — linked automatically from its card.

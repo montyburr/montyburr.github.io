@@ -653,6 +653,14 @@ h3 {
   color: var(--c-gold);
 }
 
+.btn--disabled {
+  color: var(--c-text-muted);
+  border-color: var(--c-border);
+  font-style: italic;
+  cursor: default;
+  pointer-events: none;
+}
+
 /* --------------------------------------------------------------------------
    Sections
    -------------------------------------------------------------------------- */
@@ -1022,6 +1030,19 @@ main > section:not(.hero) {
 .project-row:focus-within .project-row__icon {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+}
+
+.project-row--placeholder .project-row__title {
+  color: var(--c-text-muted);
+  font-style: italic;
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: currentColor;
+}
+
+.project-row--placeholder .project-row__num {
+  opacity: 0.4;
 }
 
 /* The rows' scroll-driven hand-off lives with the rest of it under

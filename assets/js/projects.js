@@ -69,7 +69,40 @@
     return li;
   }
 
+  // Non-interactive filler rows signalling more projects are on the way —
+  // no href, no cover image, so the hover preview and click-through both
+  // just no-op on them.
+  const COMING_SOON_COUNT = 3;
+
+  function buildPlaceholderRow(index) {
+    const li = document.createElement("li");
+    li.className = "project-row project-row--placeholder";
+
+    const inner = document.createElement("div");
+    inner.className = "project-row__inner";
+
+    const row = document.createElement("div");
+    row.className = "project-row__link";
+
+    const num = document.createElement("span");
+    num.className = "project-row__num";
+    num.setAttribute("aria-hidden", "true");
+    num.textContent = String(index + 1).padStart(2, "0") + ".";
+
+    const title = document.createElement("span");
+    title.className = "project-row__title";
+    title.textContent = "More projects coming soon";
+
+    row.append(num, title);
+    inner.appendChild(row);
+    li.appendChild(inner);
+    return li;
+  }
+
   PROJECTS.forEach((project, index) => list.appendChild(buildRow(project, index)));
+  for (let i = 0; i < COMING_SOON_COUNT; i++) {
+    list.appendChild(buildPlaceholderRow(PROJECTS.length + i));
+  }
 
   /* --- Floating preview -------------------------------------------------- */
 
