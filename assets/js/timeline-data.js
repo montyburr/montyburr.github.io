@@ -22,7 +22,10 @@ const TIMELINE = [
     institution: "Newcastle University",
     status: "3rd year",
     period: "2024 – Present",
-    detail: "First year result: First Class (average 83.3%).",
+    detail: [
+      "2nd year result: First Class (average 80.4%).",
+      "1st year result: First Class (average 83.3%).",
+    ],
   },
   {
     type: "experience",
@@ -31,8 +34,19 @@ const TIMELINE = [
     engagement: "Internship",
     period: "Jun 2026 – Present",
     location: "On-site",
-    detail: null,
-    skills: [],
+    detail:
+      "Summer Internship where I rotated across five teams (Digital Security, Service Desk, AI & Digital Engineering, Data & Analytics, and Business Applications), gaining end-to-end exposure to how an enterprise IT department operates.",
+    skills: [
+      "Cybersecurity",
+      "Cyber Defense",
+      "SIEM",
+      "Threat Intelligence",
+      "Technical Support",
+      "Artificial Intelligence (AI)",
+      "Software Development",
+      "Data Analysis",
+      "Cross-functional Collaboration",
+    ],
   },
   {
     type: "experience",
@@ -59,7 +73,7 @@ const TIMELINE = [
     period: "Jul 2023 – Aug 2023",
     location: "Slinfold, England, United Kingdom · On-site",
     detail:
-      "Work experience within the IT department of AJ Walter Aviation where I was able to be involved with the multiple different teams in this department.",
+      "Work experience within the IT department of AJW Group where I was able to be involved with the multiple different teams in this department.",
     skills: [
       "Data Analysis",
       "Customer Service",

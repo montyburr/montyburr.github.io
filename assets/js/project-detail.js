@@ -108,15 +108,26 @@
       features.appendChild(list);
     }
 
-    // No GitHub/live-demo buttons — only a write-up link, for non-code entries.
-    const links = project.writeup
-      ? (() => {
-          const wrap = document.createElement("div");
-          wrap.className = "project-card__links project-detail__links";
-          wrap.appendChild(makeLink(project.writeup, "Read Write-up"));
-          return wrap;
-        })()
-      : null;
+    // Every project shows a Live Demo slot, even before it has a real URL —
+    // a disabled placeholder rather than hiding the section outright. No
+    // GitHub button since none of the code is public yet.
+    const demoButton = project.demo
+      ? makeLink(project.demo, "View Live Demo")
+      : (() => {
+          const span = document.createElement("span");
+          span.className = "btn btn--small btn--disabled";
+          span.textContent = "Live Demo — Coming Soon";
+          span.setAttribute("aria-disabled", "true");
+          return span;
+        })();
+    const linkButtons = [demoButton];
+    if (project.writeup) linkButtons.push(makeLink(project.writeup, "Read Write-up"));
+    const links = (() => {
+      const wrap = document.createElement("div");
+      wrap.className = "project-card__links project-detail__links";
+      linkButtons.forEach((btn) => wrap.appendChild(btn));
+      return wrap;
+    })();
 
     container.append(
       heading,

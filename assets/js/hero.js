@@ -336,10 +336,8 @@
      Rolling tagline
 
      The settled line slides up out of a fixed-height window while the next
-     slides in from below. Every phrase comes from content already in the repo:
-     the tagline written in index.html, then the technical groups from
-     skills-data.js in the order they are declared, split into short runs.
-     Nothing invented.
+     slides in from below. Phrases are a fixed, hand-picked list of things
+     about Monty rather than derived from other data files.
 
      The animated span is aria-hidden and the real sentence sits beside it in a
      .visually-hidden span, so none of this reaches assistive tech.
@@ -348,38 +346,24 @@
   const ROLL = {
     durationMs: 620, // slide out / slide in
     holdMs: 3400, // pause on a settled phrase
-    // Characters per rotating line. The window is a fixed two lines tall and
-    // .hero__tagline is 30ch wide, so a phrase over roughly 46 characters wraps
-    // to three lines and gets clipped. Budgeting by length rather than by item
-    // count matters: three short skills fit, but "Security Awareness · Threat
-    // Intelligence · Secure System Design" is 62 characters and would not.
-    maxChars: 46,
   };
 
+  // Fixed rotation — .hero__type--roll's window is 3 lines tall (see
+  // style.css) so every phrase needs to fit within that at .hero__tagline's
+  // 30ch width. Phrases[0] should match the static text in index.html, since
+  // that's what's shown before this rotation takes over.
+  const PHRASES = [
+    "3rd-year Computer Science student at Newcastle University",
+    "Focused on cyber security and threat intelligence",
+    "Based in Sussex — open to grad roles",
+    "Studying how systems fail so I can help stop it",
+    "Interned in security at AJW Group",
+    "Working toward a career defending real infrastructure",
+    "Interested in the gap between it works and it's secure",
+  ];
+
   function buildPhrases(seed) {
-    const phrases = [seed];
-
-    if (typeof SKILL_CATEGORIES === "undefined" || !Array.isArray(SKILL_CATEGORIES)) {
-      return phrases;
-    }
-
-    SKILL_CATEGORIES.forEach((category) => {
-      // `technical: false` marks a group as not belonging in a tech line.
-      if (category.technical === false) return;
-      let run = [];
-      const flush = () => {
-        if (run.length) phrases.push(run.join(" · "));
-        run = [];
-      };
-      (category.skills || []).forEach((skill) => {
-        const candidate = run.concat(skill).join(" · ");
-        if (run.length && candidate.length > ROLL.maxChars) flush();
-        run.push(skill);
-      });
-      flush();
-    });
-
-    return phrases;
+    return PHRASES.length ? PHRASES : [seed];
   }
 
   function initTagline() {

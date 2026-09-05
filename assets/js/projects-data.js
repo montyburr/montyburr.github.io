@@ -1,8 +1,12 @@
 // Edit this list to add, remove, or update project cards.
 // media.type: "image" -> renders an <img>. "video" -> renders a <video> (add media.poster too).
-// No GitHub/live-demo links — code isn't public and there's nothing to demo
-// live yet. `writeup` still shows a "Read write-up" link instead, for
-// non-code entries.
+// No GitHub links yet — code isn't public for any project.
+// `demo` (optional, URL) renders a "View Live Demo" button on the project's
+// own page. Every project shows the Live Demo slot regardless — omitting
+// `demo` just renders it as a disabled "Coming Soon" placeholder instead of
+// a real link. Set it once a project is actually deployed somewhere — none
+// of the ones below are yet. `writeup` renders a "Read Write-up" link
+// alongside it, for non-code entries.
 // `details` (array of paragraph strings) and `features` (array of bullet
 // strings, optional) power each project's own page at project.html?id=<id>
 // — linked automatically from its card.
@@ -27,13 +31,23 @@ const PROJECTS = [
       "a prototype of the idea.",
     media: {
       type: "image",
-      src: "assets/img/placeholder/project-placeholder.svg",
-      alt: "Screenshot placeholder — AI Project Kickoff Assistant",
+      src: "assets/img/projects/project-kickoff/dashboard.webp",
+      alt: "AI Project Kickoff Assistant — dashboard showing submitted projects and their pipeline stage",
     },
     gallery: [
-      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 1" },
-      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 2" },
-      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — AI Project Kickoff Assistant", title: "Preview 3" },
+      { src: "assets/img/projects/project-kickoff/login.webp", alt: "AI Project Kickoff Assistant — login screen", title: "Login" },
+      { src: "assets/img/projects/project-kickoff/dashboard.webp", alt: "AI Project Kickoff Assistant — dashboard showing submitted projects and their pipeline stage", title: "Dashboard" },
+      { src: "assets/img/projects/project-kickoff/idea-entry.webp", alt: "AI Project Kickoff Assistant — idea submission form", title: "Idea Entry" },
+      { src: "assets/img/projects/project-kickoff/idea-ai-expansion.webp", alt: "AI Project Kickoff Assistant — AI expanding a submitted idea", title: "AI Idea Expansion" },
+      { src: "assets/img/projects/project-kickoff/wait-approval-of-idea.webp", alt: "AI Project Kickoff Assistant — idea awaiting Project Approval Board sign-off", title: "Awaiting Idea Approval" },
+      { src: "assets/img/projects/project-kickoff/ticket-generation.webp", alt: "AI Project Kickoff Assistant — automatically generated Jira ticket", title: "Jira Ticket Generation" },
+      { src: "assets/img/projects/project-kickoff/meeting-notes-generation.webp", alt: "AI Project Kickoff Assistant — AI-generated meeting notes", title: "Meeting Notes Generation" },
+      { src: "assets/img/projects/project-kickoff/functional-spec-generation.webp", alt: "AI Project Kickoff Assistant — AI-generated functional specification", title: "Functional Spec Generation" },
+      { src: "assets/img/projects/project-kickoff/tech-spec-generation.webp", alt: "AI Project Kickoff Assistant — AI-generated technical specification", title: "Technical Spec Generation" },
+      { src: "assets/img/projects/project-kickoff/wait-approval-for-dev-tasks.webp", alt: "AI Project Kickoff Assistant — dev tasks awaiting approval to proceed", title: "Awaiting Dev Task Approval" },
+      { src: "assets/img/projects/project-kickoff/dev-tasks-generation-and-completion.webp", alt: "AI Project Kickoff Assistant — generated dev tasks being completed", title: "Dev Tasks Generation & Completion" },
+      { src: "assets/img/projects/project-kickoff/prototype-generation.webp", alt: "AI Project Kickoff Assistant — prototype build in progress", title: "Prototype Generation" },
+      { src: "assets/img/projects/project-kickoff/updated-dashboard.webp", alt: "AI Project Kickoff Assistant — dashboard reflecting a completed prototype", title: "Updated Dashboard" },
     ],
     tools: ["React", "Next.js", "Python", "AWS Bedrock", "AI", "LLM Integration", "Prompt Engineering", "AI-Assisted Development"],
     pipeline: [
@@ -71,13 +85,24 @@ const PROJECTS = [
       "time and reduce misrouted tickets.",
     media: {
       type: "image",
-      src: "assets/img/screenshots/ticket-triage.png",
-      alt: "IT Support Ticket Triage Dashboard — ticket list with AI Copilot panel showing category, priority, and suggested action",
+      src: "assets/img/projects/ticket-triage/admin-dashboard.webp",
+      alt: "IT Support Ticket Triage Dashboard — admin dashboard showing ticket overview",
     },
     gallery: [
-      { src: "assets/img/screenshots/ticket-triage.png", alt: "IT Support Ticket Triage Dashboard — ticket list with AI Copilot panel showing category, priority, and suggested action", title: "Overview" },
-      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — IT Support Ticket Triage Dashboard", title: "Preview 2" },
-      { src: "assets/img/placeholder/project-placeholder.svg", alt: "Screenshot placeholder — IT Support Ticket Triage Dashboard", title: "Preview 3" },
+      { src: "assets/img/projects/ticket-triage/login.webp", alt: "IT Support Ticket Triage Dashboard — login screen", title: "Login" },
+      { src: "assets/img/projects/ticket-triage/splash-screen.webp", alt: "IT Support Ticket Triage Dashboard — splash screen", title: "Splash Screen" },
+      { src: "assets/img/projects/ticket-triage/admin-dashboard.webp", alt: "IT Support Ticket Triage Dashboard — admin dashboard showing ticket overview", title: "Admin Dashboard" },
+      { src: "assets/img/projects/ticket-triage/kanban-board-view.webp", alt: "IT Support Ticket Triage Dashboard — kanban board view of tickets", title: "Kanban Board View" },
+      { src: "assets/img/projects/ticket-triage/admin-analytics.webp", alt: "IT Support Ticket Triage Dashboard — admin analytics view", title: "Admin Analytics" },
+      { src: "assets/img/projects/ticket-triage/ability-to-filter.webp", alt: "IT Support Ticket Triage Dashboard — ticket filtering options", title: "Ability to Filter" },
+      { src: "assets/img/projects/ticket-triage/individual-ticket-view.webp", alt: "IT Support Ticket Triage Dashboard — individual ticket view", title: "Individual Ticket View" },
+      { src: "assets/img/projects/ticket-triage/ai-analysis.webp", alt: "IT Support Ticket Triage Dashboard — AI analysis of a ticket", title: "AI Analysis" },
+      { src: "assets/img/projects/ticket-triage/security-ai-analysis.webp", alt: "IT Support Ticket Triage Dashboard — security agent's AI analysis of a ticket", title: "Security AI Analysis" },
+      { src: "assets/img/projects/ticket-triage/custom-agents.webp", alt: "IT Support Ticket Triage Dashboard — custom AI agents list", title: "Custom Agents" },
+      { src: "assets/img/projects/ticket-triage/example-custom-agent.webp", alt: "IT Support Ticket Triage Dashboard — example of a configured custom agent", title: "Example Custom Agent" },
+      { src: "assets/img/projects/ticket-triage/theme-choice.webp", alt: "IT Support Ticket Triage Dashboard — theme selection options", title: "Theme Choice" },
+      { src: "assets/img/projects/ticket-triage/employee-splash-screen.webp", alt: "IT Support Ticket Triage Dashboard — employee splash screen", title: "Employee Splash Screen" },
+      { src: "assets/img/projects/ticket-triage/employee-specific-dashboard.webp", alt: "IT Support Ticket Triage Dashboard — employee-specific dashboard view", title: "Employee Specific Dashboard" },
     ],
     tools: ["React", "FastAPI", "Python", "AI", "LLM Integration", "Prompt Engineering"],
     details: [
