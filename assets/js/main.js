@@ -133,10 +133,16 @@ function buildTimelineEntry(entry) {
   }
 
   if (entry.detail) {
-    const detail = document.createElement("p");
-    detail.className = "timeline__detail";
-    detail.textContent = entry.detail;
-    card.appendChild(detail);
+    // `detail` is usually one line, but accepts an array so a card can show
+    // several short facts (e.g. a result per year) as separate lines rather
+    // than one run-on sentence.
+    const lines = Array.isArray(entry.detail) ? entry.detail : [entry.detail];
+    lines.forEach((line) => {
+      const detail = document.createElement("p");
+      detail.className = "timeline__detail";
+      detail.textContent = line;
+      card.appendChild(detail);
+    });
   }
 
   if (entry.skills && entry.skills.length) {
@@ -400,7 +406,7 @@ function setYear() {
 // — that section read the reference's cards as already in place between frames,
 // but the reference does scrub them on scroll.
 
-initSkillsetMarquee();
+if (typeof initSkillsetMarquee === "function") initSkillsetMarquee();
 renderTimeline();
 renderAchievements();
 initCardSpotlight();
