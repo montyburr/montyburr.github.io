@@ -42,8 +42,8 @@
         <p class="hero__tagline">
           <!-- Full sentence for assistive tech; the animated copy below is aria-hidden
                so the typewriter isn't announced character by character. -->
-          <span class="visually-hidden">Computer Science student with a passion for cyber security.</span>
-          <span class="hero__type" id="hero-type" aria-hidden="true">Computer Science student with a passion for cyber security.</span><span class="hero__caret" id="hero-caret" aria-hidden="true" hidden></span>
+          <span class="visually-hidden">3rd-year Computer Science student at Newcastle University</span>
+          <span class="hero__type" id="hero-type" aria-hidden="true">3rd-year Computer Science student at Newcastle University</span><span class="hero__caret" id="hero-caret" aria-hidden="true" hidden></span>
         </p>
         <div class="hero__cta">
           <a class="btn btn--primary" href="#projects">View Projects</a>
@@ -69,7 +69,14 @@
           </p>
         </div>
         <div class="about__panel">
-          <img class="about__avatar" src="assets/img/about/avatar.jpg" alt="Monty Burr" loading="lazy">
+          <div class="workstation" id="workstation" aria-hidden="true">
+            <svg class="workstation__svg" id="workstation-svg"></svg>
+            <div class="workstation__screen" id="workstation-screen">
+              <div class="workstation__terminal" id="workstation-terminal"></div>
+              <div class="workstation__scanline"></div>
+              <div class="workstation__crt-lines"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -174,6 +181,7 @@
   <script src="assets/js/achievements-data.js"></script>
   <script src="assets/js/nav.js"></script>
   <script src="assets/js/hero.js"></script>
+  <script src="assets/js/workstation.js"></script>
   <script src="assets/js/projects.js"></script>
   <script src="assets/js/skillset-marquee.js"></script>
   <script src="assets/js/main.js"></script>
